@@ -1,4 +1,7 @@
-package com.accenture.repository.client;
+package com.accenture.repository.dao.client;
 
-public interface ClientDAO {
+import com.accenture.repository.entity.client.Client;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ClientDAO extends JpaRepository<Client, Integer> {
 }
