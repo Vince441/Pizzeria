@@ -9,6 +9,8 @@ import com.accenture.service.mapper.client.ClientMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ClientServiceImpl implements ClientService {
     private final ClientDAO clientDAO;
@@ -31,6 +33,13 @@ public class ClientServiceImpl implements ClientService {
             clientDAO.deleteById(id);
         else
             throw new EntityNotFoundException("Le client n'existe pas.");
+    }
+
+    @Override
+    public List<ClientResponseDTO> trouverTous() {
+        return clientDAO.findAll().stream()
+                .map(clientMapper::toClientResponseDTO)
+                .toList();
     }
 
     /*
