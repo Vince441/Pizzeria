@@ -33,4 +33,16 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.id").value(Matchers.not(0)))
                 .andExpect(jsonPath("$.nom").value("THEBAULT"));
     }
+
+    @Test
+    void testPostClientFail() throws Exception {
+        Client client = new Client(null, "Elian", "elian@mail.com");
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/clients")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(client)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("Erreur validation"))
+                .andExpect(jsonPath("$.message").value("Le nom doit être renseigné."));
+    }
 }
