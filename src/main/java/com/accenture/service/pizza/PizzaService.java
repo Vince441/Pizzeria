@@ -11,4 +11,8 @@ public interface PizzaService {
 
 
     void supprimer(Integer id) throws PizzaException;
+
+    PizzaResponseDto modifierPartiellement(int id, PizzaRequestDto pizzaRequestDto) throws PizzaException;
+
+
 }
