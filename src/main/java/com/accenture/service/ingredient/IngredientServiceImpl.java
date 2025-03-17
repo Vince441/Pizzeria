@@ -2,6 +2,7 @@ package com.accenture.service.ingredient;
 
 import com.accenture.exception.IngredientException;
 import com.accenture.repository.dao.ingredient.IngredientDAO;
+import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.service.dto.ingredient.IngredientRequestDTO;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.accenture.service.mapper.ingredient.IngredientMapper;
@@ -21,6 +22,11 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public IngredientResponseDTO ajouter(IngredientRequestDTO ingredientRequestDTO) throws IngredientException {
+        validerIngredient(ingredientRequestDTO);
+        return retourneIngredientResponseApresAjout(ingredientRequestDTO);
+    }
+
+    private static void validerIngredient(IngredientRequestDTO ingredientRequestDTO) {
         if (ingredientRequestDTO == null)
             throw new IngredientException("L'ingrédient doit exister.");
         if (ingredientRequestDTO.nom() == null
@@ -30,7 +36,6 @@ public class IngredientServiceImpl implements IngredientService {
             throw new IngredientException("Le stock doit être renseigné.");
         if (ingredientRequestDTO.stock() <= 0)
             throw new IngredientException("Le stock doit être positif.");
-        return null;
     }
 
     @Override
@@ -38,5 +43,15 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientDAO.findAll().stream()
                 .map(ingredientMapper::toIngredientResponseDTO)
                 .toList();
+    }
+
+    /*
+     * METHODES PRIVEES
+     */
+
+    private IngredientResponseDTO retourneIngredientResponseApresAjout(IngredientRequestDTO ingredientRequestDTO) {
+        Ingredient ingredient = ingredientMapper.toIngredient(ingredientRequestDTO);
+        Ingredient ingredientAjoute = ingredientDAO.save(ingredient);
+        return ingredientMapper.toIngredientResponseDTO(ingredientAjoute);
     }
 }

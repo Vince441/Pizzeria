@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,6 +50,20 @@ class IngredientServiceImplTest {
     }
 
     @Test
+    void ajouterSuccess() {
+        IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
+        Ingredient ingredient = creerPepperoni();
+        Ingredient returnedIngredient = creerPepperoni();
+        returnedIngredient.setId(1);
+        IngredientResponseDTO ingredientResponseDTO = creerPepperoniResponseDTO();
+        when(ingredientMapper.toIngredient(ingredientRequestDTO)).thenReturn(ingredient);
+        when(ingredientDAO.save(ingredient)).thenReturn(returnedIngredient);
+        when(ingredientMapper.toIngredientResponseDTO(returnedIngredient)).thenReturn(ingredientResponseDTO);
+        assertEquals(ingredientResponseDTO, ingredientService.ajouter(ingredientRequestDTO));
+        verify(ingredientDAO).save(ingredient);
+    }
+
+    @Test
     void testTrouverTous() {
         Ingredient pepperoni = creerPepperoni();
         Ingredient mozarella = creerMozarella();
@@ -83,5 +96,9 @@ class IngredientServiceImplTest {
 
     private IngredientResponseDTO creerMozarellaResponseDTO() {
         return new IngredientResponseDTO(2, "Mozarella", 35);
+    }
+
+    private IngredientRequestDTO creerPepperoniRequestDTO() {
+        return new IngredientRequestDTO("Pepperoni", 50);
     }
 }
