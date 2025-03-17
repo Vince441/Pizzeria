@@ -6,6 +6,7 @@ import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -36,21 +36,21 @@ public class testPizzaServiceImplTest {
 @Test
     void testAjouterPizzaNull(){
     PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(null));
-    Assertions.assertEquals("La pizza doit exister", pe.getMessage());
+    assertEquals("La pizza doit exister", pe.getMessage());
 }
 
 @Test
     void testAjouterPizzaNomNull() {
     PizzaRequestDto dto = new PizzaRequestDto(1, null);
     PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
-Assertions.assertEquals("Le nom est obligatoire", pe.getMessage());
+assertEquals("Le nom est obligatoire", pe.getMessage());
 }
 
 @Test
 void testAjouterPizzaNomBlank(){
     PizzaRequestDto dto = new PizzaRequestDto(1, "\n");
     PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
-    Assertions.assertEquals("Le nom est obligatoire", pe.getMessage());
+    assertEquals("Le nom est obligatoire", pe.getMessage());
 }
 
 
@@ -78,8 +78,14 @@ void testSupprimerExiste(){
     service.supprimer(id);
     Mockito.verify(daoMock, Mockito.times(1)).delete(pizza);
 
+}
 
 
+@Test
+void testSupprimerExistePas(){
+    Mockito.when(daoMock.findById(4)).thenReturn(Optional.empty());
+    EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> service.supprimer(4));
+    assertEquals("Pizza non trouvé", ex.getMessage());
 }
 
 
