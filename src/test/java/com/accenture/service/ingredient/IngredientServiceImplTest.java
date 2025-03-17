@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class IngredientServiceImplTest {
+class IngredientServiceImplTest {
     @Mock
     private IngredientDAO ingredientDAO;
     @Mock
