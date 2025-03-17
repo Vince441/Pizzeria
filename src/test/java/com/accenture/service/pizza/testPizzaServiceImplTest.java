@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
+
 public class testPizzaServiceImplTest {
 
     @InjectMocks
@@ -41,14 +42,14 @@ public class testPizzaServiceImplTest {
 
 @Test
     void testAjouterPizzaNomNull() {
-    PizzaRequestDto dto = new PizzaRequestDto(1, null);
+    PizzaRequestDto dto = new PizzaRequestDto(null);
     PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
 assertEquals("Le nom est obligatoire", pe.getMessage());
 }
 
 @Test
 void testAjouterPizzaNomBlank(){
-    PizzaRequestDto dto = new PizzaRequestDto(1, "\n");
+    PizzaRequestDto dto = new PizzaRequestDto("\n");
     PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
     assertEquals("Le nom est obligatoire", pe.getMessage());
 }
@@ -56,7 +57,7 @@ void testAjouterPizzaNomBlank(){
 
 @Test
     void testAjouterOk(){
-    PizzaRequestDto requestDto = new PizzaRequestDto(1, "Margarita");
+    PizzaRequestDto requestDto = new PizzaRequestDto("Margarita");
     Pizza pizzaAvantEnreg = creePizza();
 
     Pizza pizzaApresEnreg = creePizza();
@@ -88,6 +89,29 @@ void testSupprimerExistePas(){
     assertEquals("Pizza non trouvé", ex.getMessage());
 }
 
+@Test
+void testModifierPartiellement(){
+    int id = 1;
+
+    Pizza pizzaExistante = creePizza();
+    PizzaResponseDto pizzaEnreg = creePizzaResponseDto();
+    PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("Bolognaise");
+
+
+    Mockito.when(daoMock.findById(id)).thenReturn(Optional.of(pizzaExistante));
+    Mockito.when(mapperMock.toPizza(pizzaRequestDto)).thenReturn(pizzaExistante);
+    Mockito.when(daoMock.save(pizzaExistante)).thenReturn(pizzaExistante);
+    Mockito.when(mapperMock.toPizzaResponseDto(pizzaExistante)).thenReturn(pizzaEnreg);
+
+    PizzaResponseDto result = service.modifierPartiellement(id, pizzaRequestDto);
+    assertNotNull(result);
+    assertEquals(pizzaEnreg, result);
+    Mockito.verify(daoMock).findById(id);
+    Mockito.verify(mapperMock).toPizza(pizzaRequestDto);
+    Mockito.verify(daoMock).save(pizzaExistante);
+    Mockito.verify(mapperMock).toPizzaResponseDto(pizzaExistante);
+
+}
 
 
 

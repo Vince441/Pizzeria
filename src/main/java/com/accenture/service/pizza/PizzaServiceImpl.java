@@ -8,11 +8,12 @@ import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;
 import jakarta.persistence.EntityNotFoundException;
 
-public class PizzaServiceImpl implements PizzaService{
+import java.util.Optional;
+
+public class PizzaServiceImpl implements PizzaService {
 
     private final PizzaDao pizzaDao;
     private final PizzaMapper pizzaMapper;
-
 
 
     public PizzaServiceImpl(PizzaDao pizzaDao, PizzaMapper pizzaMapper) {
@@ -37,18 +38,38 @@ public class PizzaServiceImpl implements PizzaService{
     }
 
 
-//Methode privée //
+    @Override
+    public PizzaResponseDto modifierPartiellement(int id, PizzaRequestDto pizzaRequestDto) throws PizzaException {
+        Optional<Pizza> optPizza = pizzaDao.findById(id);
+        if (optPizza.isEmpty())
+            throw new PizzaException("Je n'ai pas trouvé la pizza");
 
-    private static void verificationPizza(PizzaRequestDto pizzaRequestDto) {
-        if(pizzaRequestDto == null)
-            throw new PizzaException("La pizza doit exister");
-        if(pizzaRequestDto.nom() == null)
-            throw new PizzaException("Le nom est obligatoire");
-        if(pizzaRequestDto.nom().isBlank())
-            throw new PizzaException("Le nom est obligatoire");
+        Pizza pizzaExistante = optPizza.get();
+        Pizza pizzaEnreg = pizzaMapper.toPizza(pizzaRequestDto);
+
+        remplacer(pizzaExistante, pizzaEnreg);
+        Pizza modifPizza = pizzaDao.save(pizzaExistante);
+        return pizzaMapper.toPizzaResponseDto(modifPizza);
+
+
+    }
+
+    private void remplacer(Pizza pizzaExistante, Pizza pizzaEnreg) {
+        if (pizzaExistante.getNom()== null)
+            pizzaExistante.setNom(pizzaEnreg.getNom());
     }
 
 
+//Methode privée //
+
+    private static void verificationPizza(PizzaRequestDto pizzaRequestDto) {
+        if (pizzaRequestDto == null)
+            throw new PizzaException("La pizza doit exister");
+        if (pizzaRequestDto.nom() == null)
+            throw new PizzaException("Le nom est obligatoire");
+        if (pizzaRequestDto.nom().isBlank())
+            throw new PizzaException("Le nom est obligatoire");
+    }
 
 
 }
