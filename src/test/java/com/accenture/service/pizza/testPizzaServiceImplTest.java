@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -67,8 +69,26 @@ void testAjouterPizzaNomBlank(){
     assertSame(responseDto, service.ajouter(requestDto));
 }
 
+@Test
+void testSupprimerExiste(){
+
+    Pizza pizza = creePizza();
+    Integer id = pizza.getId();
+    Mockito.when(daoMock.findById(id)).thenReturn(Optional.of(pizza));
+    service.supprimer(id);
+    Mockito.verify(daoMock, Mockito.times(1)).delete(pizza);
+
+
+
+}
+
+
+
+
+
     private Pizza creePizza() {
     Pizza p = new Pizza();
+    p.setId(1);
     p.setNom("Margarita");
     return p;
     }

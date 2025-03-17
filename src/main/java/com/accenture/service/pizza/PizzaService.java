@@ -10,5 +10,5 @@ public interface PizzaService {
     PizzaResponseDto ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException;
 
 
-
+    void supprimer(Integer id) throws PizzaException;
 }

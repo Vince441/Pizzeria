@@ -6,11 +6,12 @@ import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;
+import jakarta.persistence.EntityNotFoundException;
 
 public class PizzaServiceImpl implements PizzaService{
 
     private final PizzaDao pizzaDao;
-private final PizzaMapper pizzaMapper;
+    private final PizzaMapper pizzaMapper;
 
 
 
@@ -29,7 +30,11 @@ private final PizzaMapper pizzaMapper;
         return pizzaMapper.toPizzaResponseDto(pizzaEnreg);
     }
 
-
+    @Override
+    public void supprimer(Integer id) throws PizzaException {
+        Pizza pizza = pizzaDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Pizza non trouvé"));
+        pizzaDao.delete(pizza);
+    }
 
 
 //Methode privée //
