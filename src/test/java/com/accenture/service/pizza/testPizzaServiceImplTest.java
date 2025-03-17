@@ -1,14 +1,20 @@
 package com.accenture.service.pizza;
 
 import com.accenture.exception.PizzaException;
+import com.accenture.repository.dao.pizza.PizzaDao;
 import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.pizza.PizzaRequestDto;
+import com.accenture.service.dto.pizza.PizzaResponseDto;
+import com.accenture.service.mapper.PizzaMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -18,6 +24,11 @@ public class testPizzaServiceImplTest {
     @InjectMocks
     private PizzaServiceImpl service;
 
+    @Mock
+    PizzaMapper mapperMock;
+
+    @Mock
+    PizzaDao daoMock;
 
 
 @Test
@@ -41,8 +52,30 @@ void testAjouterPizzaNomBlank(){
 }
 
 
+@Test
+    void testAjouterOk(){
+    PizzaRequestDto requestDto = new PizzaRequestDto(1, "Margarita");
+    Pizza pizzaAvantEnreg = creePizza();
 
+    Pizza pizzaApresEnreg = creePizza();
+    PizzaResponseDto responseDto = creePizzaResponseDto();
 
+    Mockito.when(mapperMock.toPizza(requestDto)).thenReturn(pizzaAvantEnreg);
+    Mockito.when(daoMock.save(pizzaAvantEnreg)).thenReturn(pizzaApresEnreg);
+    Mockito.when(mapperMock.toPizzaResponseDto(pizzaApresEnreg)).thenReturn(responseDto);
+
+    assertSame(responseDto, service.ajouter(requestDto));
+}
+
+    private Pizza creePizza() {
+    Pizza p = new Pizza();
+    p.setNom("Margarita");
+    return p;
+    }
+
+    private static PizzaResponseDto creePizzaResponseDto(){
+    return new PizzaResponseDto("Margarita");
+    }
 
 
 }
