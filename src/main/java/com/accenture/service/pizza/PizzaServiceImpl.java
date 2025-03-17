@@ -69,6 +69,8 @@ public class PizzaServiceImpl implements PizzaService {
             throw new PizzaException("Le nom est obligatoire");
         if (pizzaRequestDto.nom().isBlank())
             throw new PizzaException("Le nom est obligatoire");
+        if(pizzaRequestDto.tarifTaille() == null)
+            throw new PizzaException("La taille est obligatoire");
     }
 
 

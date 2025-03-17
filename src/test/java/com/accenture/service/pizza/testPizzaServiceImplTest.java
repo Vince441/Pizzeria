@@ -60,6 +60,15 @@ public class testPizzaServiceImplTest {
         assertEquals("Le nom est obligatoire", pe.getMessage());
     }
 
+    @Test
+    void testAjouterPizzaTailleNull(){
+        HashMap<Taille, Double> tarifTaille = new HashMap<>();
+        tarifTaille.put(null, 12.00);
+        PizzaRequestDto dto = new PizzaRequestDto("Kebab",tarifTaille);
+        PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
+        assertEquals("La taille est obligatoire", pe.getMessage());
+
+    }
 
     @Test
     void testAjouterOk() {
