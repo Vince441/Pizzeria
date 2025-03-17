@@ -32,12 +32,18 @@ private final PizzaMapper pizzaMapper;
 
 
 
-
+//Methode privée //
 
     private static void verificationPizza(PizzaRequestDto pizzaRequestDto) {
         if(pizzaRequestDto == null)
             throw new PizzaException("La pizza doit exister");
         if(pizzaRequestDto.nom() == null)
             throw new PizzaException("Le nom est obligatoire");
+        if(pizzaRequestDto.nom().isBlank())
+            throw new PizzaException("Le nom est obligatoire");
     }
+
+
+
+
 }

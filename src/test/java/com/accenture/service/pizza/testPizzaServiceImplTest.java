@@ -28,22 +28,21 @@ public class testPizzaServiceImplTest {
 
 @Test
     void testAjouterPizzaNomNull() {
-    PizzaRequestDto dto = getPizzaRequestDto();
+    PizzaRequestDto dto = new PizzaRequestDto(1, null);
     PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
 Assertions.assertEquals("Le nom est obligatoire", pe.getMessage());
 }
 
 @Test
+void testAjouterPizzaNomBlank(){
+    PizzaRequestDto dto = new PizzaRequestDto(1, "\n");
+    PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
+    Assertions.assertEquals("Le nom est obligatoire", pe.getMessage());
+}
 
 
 
 
-
-
-private static PizzaRequestDto getPizzaRequestDto() {
-        PizzaRequestDto dto = new PizzaRequestDto(1, null);
-        return dto;
-    }
 
 
 }
