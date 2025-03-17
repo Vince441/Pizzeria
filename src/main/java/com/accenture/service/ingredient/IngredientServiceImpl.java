@@ -10,6 +10,13 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientResponseDTO ajouter(IngredientRequestDTO ingredientRequestDTO) throws IngredientException {
         if (ingredientRequestDTO == null)
             throw new IngredientException("L'ingrédient doit exister.");
+        if (ingredientRequestDTO.nom() == null
+                || ingredientRequestDTO.nom().isBlank())
+            throw new IngredientException("Le nom doit être renseigné.");
+        if (ingredientRequestDTO.stock() == null)
+            throw new IngredientException("Le stock doit être renseigné.");
+        if (ingredientRequestDTO.stock() <= 0)
+            throw new IngredientException("Le stock doit être positif.");
         return null;
     }
 }
