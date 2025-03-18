@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,9 +83,20 @@ class ClientServiceImplTest {
     }
 
     @Test
-    void testTrouver() {
+    void testTrouverFail() {
+        when(clientDAO.existsById(44)).thenReturn(false);
         EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> clientService.trouver(44));
         assertEquals("Le client n'existe pas.", ex.getMessage());
+    }
+
+    @Test
+    void testTrouverSuccess() {
+        ClientResponseDTO clientResponseDTO = creerClientResponseDTO();
+        Optional<Client> optionalClient = Optional.of(creerClient());
+        when(clientDAO.existsById(1)).thenReturn(true);
+        when(clientDAO.findById(1)).thenReturn(optionalClient);
+        when(clientService.trouver(1)).thenReturn(clientResponseDTO);
+        assertEquals(clientService.trouver(1), clientResponseDTO);
     }
 
     /*
