@@ -23,7 +23,7 @@ public class IngredientControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void testPostClientAvecObjet() throws Exception {
+    void testPostIngredientAvecObjet() throws Exception {
         Ingredient ingredient = new Ingredient("Basilic", 45);
         mockMvc.perform(MockMvcRequestBuilders.post("/ingredients")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -32,5 +32,17 @@ public class IngredientControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.id").value(Matchers.not(0)))
                 .andExpect(jsonPath("$.nom").value("Basilic"));
+    }
+
+    @Test
+    void testPostIngredientFail() throws Exception {
+        Ingredient ingredient = new Ingredient(null, 45);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/ingredients")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(ingredient)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("Erreur validation"))
+                .andExpect(jsonPath("$.message").value("Le nom doit être renseigné."));
     }
 }

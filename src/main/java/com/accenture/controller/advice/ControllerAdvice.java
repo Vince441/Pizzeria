@@ -1,6 +1,7 @@
 package com.accenture.controller.advice;
 
 import com.accenture.exception.ClientException;
+import com.accenture.exception.IngredientException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,12 @@ import java.time.LocalDateTime;
 public class ControllerAdvice {
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<MessageError> handleClientException(ClientException e){
+        MessageError me = new MessageError(LocalDateTime.now(), "Erreur validation", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(me);
+    }
+
+    @ExceptionHandler(IngredientException.class)
+    public ResponseEntity<MessageError> handleIngredientException(IngredientException e){
         MessageError me = new MessageError(LocalDateTime.now(), "Erreur validation", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(me);
     }
