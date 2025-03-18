@@ -15,6 +15,7 @@ import java.util.Optional;
 @Service
 public class PizzaServiceImpl implements PizzaService {
 
+    public static final String ID_NON_CONNU = "Id non connu";
     private final PizzaDao pizzaDao;
     private final PizzaMapper pizzaMapper;
 
@@ -60,6 +61,11 @@ public class PizzaServiceImpl implements PizzaService {
     @Override
     public List<Pizza> trouverTous() {
         return pizzaDao.findAll();
+    }
+
+    @Override
+    public Pizza findById(int id) {
+        return pizzaDao.findById(id).orElseThrow(() -> new PizzaException(ID_NON_CONNU + id));
     }
 
     private void remplacer(Pizza pizzaExistante, Pizza pizzaEnreg) {

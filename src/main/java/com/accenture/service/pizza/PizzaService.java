@@ -19,5 +19,6 @@ public interface PizzaService {
 
     List<Pizza> trouverTous();
 
+    Pizza findById(int id);
 }
 

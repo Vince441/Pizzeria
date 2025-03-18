@@ -33,6 +33,12 @@ public class PizzaController {
         return pizzaService.trouverTous();
     }
 
+    @GetMapping("/{id}")
+    public Pizza trouverParId(@PathVariable int id){
+        return pizzaService.findById(id);
+    }
+
+
 }
 
 

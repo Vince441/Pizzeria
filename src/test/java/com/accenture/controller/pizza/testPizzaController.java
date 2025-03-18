@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -77,6 +79,18 @@ public class testPizzaController {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                 .andExpect(MockMvcResultMatchers.content().string(CoreMatchers.containsString("Reine")));
+
+    }
+
+
+    @Test
+    void testTrouverParId() throws Exception {
+        Pizza pizza = getPizza();
+        Mockito.when(pizzaService.findById(ArgumentMatchers.anyInt())).thenReturn(pizza);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizza/10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nom").value("Margarita"));
 
 
     }
