@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pizza")
+@RequestMapping("/pizzas")
 public class PizzaController {
 
     private final PizzaService pizzaService;
@@ -25,17 +25,24 @@ public class PizzaController {
     ResponseEntity<PizzaResponseDto> ajouter(@RequestBody PizzaRequestDto pizzaRequestDto) {
         PizzaResponseDto pizzaResponseDto = pizzaService.ajouter(pizzaRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pizzaResponseDto);
-
     }
 
-    @GetMapping("/liste")
+    @GetMapping
     public List<Pizza> trouverTous() {
         return pizzaService.trouverTous();
     }
 
-    @GetMapping("/{id}")
-    public Pizza trouverParId(@PathVariable int id){
-        return pizzaService.findById(id);
+    @GetMapping("/id/{id}")
+    public ResponseEntity<PizzaResponseDto> trouverParId(@PathVariable int id){
+        PizzaResponseDto trouve = pizzaService.findById(id);
+        return ResponseEntity.ok(trouve);
+    }
+
+
+    @GetMapping("/nom/{nom}")
+    public ResponseEntity<PizzaResponseDto> trouverParNom(@PathVariable("nom") String nom){
+       PizzaResponseDto trouve = pizzaService.findByNom(nom);
+       return ResponseEntity.ok(trouve);
     }
 
 

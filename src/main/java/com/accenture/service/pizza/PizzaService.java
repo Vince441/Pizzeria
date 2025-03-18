@@ -17,8 +17,10 @@ public interface PizzaService {
     PizzaResponseDto modifierPartiellement(int id, PizzaRequestDto pizzaRequestDto) throws PizzaException;
 
 
-    List<Pizza> trouverTous();
+    List<Pizza> trouverTous() throws PizzaException;
 
-    Pizza findById(int id);
+    PizzaResponseDto findById(int id) throws PizzaException;
+
+    PizzaResponseDto findByNom(String nom) throws PizzaException;
 }
 

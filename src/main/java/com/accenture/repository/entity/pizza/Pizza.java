@@ -30,7 +30,7 @@ public class Pizza {
 //    private List<Ingredient> ingredientsList;
 
 
-    public Pizza(String nom, HashMap<Taille, Double> tarifTaille) {
+    public Pizza(String nom, Map<Taille, Double> tarifTaille) {
         this.nom = nom;
         this.tarifTaille = tarifTaille;
     }

@@ -3,11 +3,12 @@ package com.accenture.service.dto.pizza;
 import com.accenture.shared.Taille;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public record  PizzaResponseDto(
 
         String nom,
-        HashMap<Taille, Double> tarifTaille
+        Map<Taille, Double> tarifTaille
 
 
 ) {

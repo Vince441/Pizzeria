@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +45,7 @@ public class testPizzaServiceImplTest {
 
     @Test
     void testAjouterPizzaNomNull() {
-        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
         PizzaRequestDto dto = new PizzaRequestDto(null, tarifTaille);
         PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
@@ -53,7 +54,7 @@ public class testPizzaServiceImplTest {
 
     @Test
     void testAjouterPizzaNomBlank() {
-        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
         PizzaRequestDto dto = new PizzaRequestDto("\n", tarifTaille);
         PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
@@ -62,7 +63,7 @@ public class testPizzaServiceImplTest {
 
     @Test
     void testAjouterPizzaTailleNull(){
-        HashMap<Taille, Double> tarifTaille = new HashMap<>();
+        Map<Taille, Double> tarifTaille = new HashMap<>();
         tarifTaille.put(null, 12.00);
         PizzaRequestDto dto = new PizzaRequestDto("Kebab",tarifTaille);
 
@@ -74,7 +75,7 @@ public class testPizzaServiceImplTest {
 
     @Test
     void testAjouterOk() {
-        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
         PizzaRequestDto requestDto = new PizzaRequestDto("Margarita", tarifTaille);
         Pizza pizzaAvantEnreg = creePizza();
@@ -112,7 +113,7 @@ public class testPizzaServiceImplTest {
     @Test
     void testModifierPartiellement() {
         int id = 1;
-        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
 
         Pizza pizzaExistante = creePizza();
@@ -137,7 +138,7 @@ public class testPizzaServiceImplTest {
 
 
     private Pizza creePizza() {
-        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
         Pizza p = new Pizza();
         p.setId(1);
@@ -147,13 +148,13 @@ public class testPizzaServiceImplTest {
     }
 
     private static PizzaResponseDto creePizzaResponseDto() {
-        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
         return new PizzaResponseDto("Margarita", tarifTaille);
     }
 
-    private static HashMap<Taille, Double> getTailleDoubleHashMap() {
-        HashMap<Taille, Double> tarifTaille = new HashMap<>();
+    private static Map<Taille, Double> getTailleDoubleHashMap() {
+        Map<Taille, Double> tarifTaille = new HashMap<>();
         tarifTaille.put(Taille.GRANDE, 12.00);
         return tarifTaille;
     }

@@ -8,7 +8,7 @@ VALUES
     (1, '4 fromages'),
     (2, 'Saumon Buratta');
 
-INSERT INTO pizza_prix (pizza_id, taille, prix)
+INSERT INTO pizza_prix (pizza_id, tarif_taille_key, prix)
 VALUES
     (1, 'PETITE', 7),
     (1, 'MOYENNE', 13),

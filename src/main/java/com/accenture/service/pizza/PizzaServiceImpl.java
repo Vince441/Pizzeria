@@ -16,6 +16,7 @@ import java.util.Optional;
 public class PizzaServiceImpl implements PizzaService {
 
     public static final String ID_NON_CONNU = "Id non connu";
+    public static final String NOM_INTROUVABLE = "Nom introuvable";
     private final PizzaDao pizzaDao;
     private final PizzaMapper pizzaMapper;
 
@@ -64,12 +65,25 @@ public class PizzaServiceImpl implements PizzaService {
     }
 
     @Override
-    public Pizza findById(int id) {
-        return pizzaDao.findById(id).orElseThrow(() -> new PizzaException(ID_NON_CONNU + id));
+    public PizzaResponseDto findById(int id) {
+        Optional<Pizza> optPizza = pizzaDao.findById(id);
+        if (optPizza.isEmpty())
+            throw new EntityNotFoundException(ID_NON_CONNU);
+        Pizza pizza = optPizza.get();
+        return pizzaMapper.toPizzaResponseDto((pizza));
+    }
+
+    @Override
+    public PizzaResponseDto findByNom(String nom) {
+        Optional<Pizza> optPizza = pizzaDao.findByNom(nom);
+        if (optPizza.isEmpty())
+            throw new EntityNotFoundException("Je n'ai pas trouver le nom");
+        Pizza pizza = optPizza.get();
+        return pizzaMapper.toPizzaResponseDto((pizza));
     }
 
     private void remplacer(Pizza pizzaExistante, Pizza pizzaEnreg) {
-        if (pizzaExistante.getNom()== null)
+        if (pizzaExistante.getNom() == null)
             pizzaExistante.setNom(pizzaEnreg.getNom());
     }
 
@@ -83,7 +97,7 @@ public class PizzaServiceImpl implements PizzaService {
             throw new PizzaException("Le nom est obligatoire");
         if (pizzaRequestDto.nom().isBlank())
             throw new PizzaException("Le nom est obligatoire");
-        if(pizzaRequestDto.tarifTaille() == null || pizzaRequestDto.tarifTaille().containsKey(null))
+        if (pizzaRequestDto.tarifTaille() == null || pizzaRequestDto.tarifTaille().containsKey(null))
             throw new PizzaException("La taille est obligatoire");
     }
 
