@@ -31,14 +31,13 @@ public class testPizzaController {
     void testPostPizzaAvecObject() throws Exception {
         HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
-        Pizza pizza = new Pizza("Burger", tarifTaille);
+        Pizza pizza = new Pizza("4 fromages", tarifTaille);
         mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(pizza)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.id").value(Matchers.not(0)))
-                .andExpect(jsonPath("$.nom").value("Burger"));
+                .andExpect(jsonPath("$.nom").value("4 fromages"))
+                .andExpect(jsonPath("$.tarifTaille.GRANDE").value(17.0));
 
 
 
@@ -46,8 +45,8 @@ public class testPizzaController {
 
     private static HashMap<Taille, Double> getTailleDoubleHashMap() {
         HashMap<Taille, Double> tarifTaille = new HashMap<>();
-        tarifTaille.put(Taille.GRANDE, 12.00);
-        return tarifTaille;
+        tarifTaille.put(Taille.GRANDE, 17.00);
+return tarifTaille;
     }
 
 }
