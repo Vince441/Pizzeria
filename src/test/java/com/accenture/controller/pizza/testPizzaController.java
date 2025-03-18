@@ -43,6 +43,21 @@ public class testPizzaController {
 
     }
 
+
+    @Test
+    void testPostPizzaFail() throws Exception{
+        HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+Pizza pizza = new Pizza(null,tarifTaille);
+mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(pizza)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("Erreur validation"))
+                .andExpect(jsonPath("$.message").value("Le nom est obligatoire"));
+
+
+    }
+
     private static HashMap<Taille, Double> getTailleDoubleHashMap() {
         HashMap<Taille, Double> tarifTaille = new HashMap<>();
         tarifTaille.put(Taille.GRANDE, 17.00);

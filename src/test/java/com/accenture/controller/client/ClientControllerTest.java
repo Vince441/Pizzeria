@@ -43,6 +43,6 @@ class ClientControllerTest {
                                 .content(objectMapper.writeValueAsString(client)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("Erreur validation"))
-                .andExpect(jsonPath("$.message").value("Le nom doit être renseigné."));
+                .andExpect(jsonPath("$.message").value("Le nom est obligatoire"));
     }
 }
