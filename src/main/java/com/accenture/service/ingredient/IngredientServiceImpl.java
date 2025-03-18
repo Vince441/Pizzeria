@@ -37,19 +37,24 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public IngredientResponseDTO modifier(int id, IngredientRequestDTO ingredientRequestDTO) throws EntityNotFoundException, IngredientException {
-        verifierIngredient(id);
-
-        return null;
+        if (!ingredientDAO.existsById(id))
+            throw new EntityNotFoundException("L'ingredient n'existe pas");
+        Optional<Ingredient> optionalIngredient = ingredientDAO.findById(id);
+        Ingredient ingredientExistant = optionalIngredient.get();
+        Ingredient ingredientModifie = ingredientMapper.toIngredient(ingredientRequestDTO);
+        comparerIngredient(ingredientModifie, ingredientExistant);
+        return ingredientMapper.toIngredientResponseDTO(ingredientDAO.save(ingredientExistant));
     }
 
     /*
      * METHODES PRIVEES
      */
 
-    private void verifierIngredient(int id) {
-        Optional<Ingredient> optionalIngredient = ingredientDAO.findById(id);
-        if (optionalIngredient.isEmpty())
-            throw new EntityNotFoundException("L'ingredient n'existe pas");
+    private static void comparerIngredient(Ingredient ingredientModifie, Ingredient ingredientExistant) {
+        if (ingredientModifie.getNom() != null)
+            ingredientExistant.setNom(ingredientModifie.getNom());
+        if (ingredientModifie.getStock() != null)
+            ingredientExistant.setStock(ingredientModifie.getStock());
     }
 
     private IngredientResponseDTO retourneIngredientResponseApresAjout(IngredientRequestDTO ingredientRequestDTO) {

@@ -6,6 +6,7 @@ import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.service.dto.ingredient.IngredientRequestDTO;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.accenture.service.mapper.ingredient.IngredientMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,16 +68,23 @@ class IngredientServiceImplTest {
     @Test
     void testTrouverTous() {
         Ingredient pepperoni = creerPepperoni();
-        Ingredient mozarella = creerMozarella();
-        List<Ingredient> listeIngredients = List.of(pepperoni, mozarella);
+        Ingredient mozzarella = creerMozzarella();
+        List<Ingredient> listeIngredients = List.of(pepperoni, mozzarella);
         IngredientResponseDTO pepperoniResponseDTO = creerPepperoniResponseDTO();
-        IngredientResponseDTO mozarellaResponseDTO = creerMozarellaResponseDTO();
-        List<IngredientResponseDTO> listeIngredientResponseDTOs = List.of(pepperoniResponseDTO, mozarellaResponseDTO);
+        IngredientResponseDTO mozzarellaResponseDTO = creerMozzarellaResponseDTO();
+        List<IngredientResponseDTO> listeIngredientResponseDTOs = List.of(pepperoniResponseDTO, mozzarellaResponseDTO);
         when(ingredientDAO.findAll()).thenReturn(listeIngredients);
         when(ingredientMapper.toIngredientResponseDTO(pepperoni)).thenReturn(pepperoniResponseDTO);
-        when(ingredientMapper.toIngredientResponseDTO(mozarella)).thenReturn(mozarellaResponseDTO);
+        when(ingredientMapper.toIngredientResponseDTO(mozzarella)).thenReturn(mozzarellaResponseDTO);
         assertEquals(listeIngredientResponseDTOs, ingredientService.trouverTous());
         verify(ingredientDAO).findAll();
+    }
+
+    @Test
+    void mocifierFail() {
+        IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
+        EntityNotFoundException entityNotFoundException = assertThrows(EntityNotFoundException.class, () -> ingredientService.modifier(44, ingredientRequestDTO));
+        assertEquals("L'ingredient n'existe pas", entityNotFoundException.getMessage());
     }
 
     @Test
@@ -84,17 +92,22 @@ class IngredientServiceImplTest {
         int id = 1;
         IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
         Ingredient ingredientExistant = creerPepperoni();
+        ingredientExistant.setId(id);
+        Optional<Ingredient> optionalIngredientExistant = Optional.of(ingredientExistant);
         Ingredient ingredientModifie = creerPepperoni();
+        ingredientModifie.setId(id);
+        Ingredient ingredientRetourne = creerPepperoni();
+        ingredientRetourne.setId(id);
         IngredientResponseDTO ingredientResponseAttendu = creerAutrePepperoniResponseDTO();
 
-        when(ingredientDAO.findById(id)).thenReturn(Optional.of(ingredientExistant));
+        when(ingredientDAO.existsById(id)).thenReturn(true);
+        when(ingredientDAO.findById(id)).thenReturn(optionalIngredientExistant);
         when(ingredientMapper.toIngredient(ingredientRequestDTO)).thenReturn(ingredientModifie);
-        when(ingredientDAO.save(ingredientExistant)).thenReturn((ingredientModifie));
-        when(ingredientMapper.toIngredientResponseDTO(ingredientModifie)).thenReturn(ingredientResponseAttendu);
+        when(ingredientDAO.save(ingredientExistant)).thenReturn(ingredientRetourne);
+        when(ingredientMapper.toIngredientResponseDTO(ingredientExistant)).thenReturn(ingredientResponseAttendu);
 
         IngredientResponseDTO resultat = ingredientService.modifier(id, ingredientRequestDTO);
 
-        assertEquals(ingredientResponseAttendu, resultat);
         verify(ingredientDAO).save(ingredientExistant);
     }
 
@@ -102,8 +115,8 @@ class IngredientServiceImplTest {
      * METHODES PRIVEES
      */
 
-    private static Ingredient creerMozarella() {
-        return new Ingredient("Mozarella", 35);
+    private static Ingredient creerMozzarella() {
+        return new Ingredient("Mozzarella", 35);
     }
 
     private static Ingredient creerPepperoni() {
@@ -118,8 +131,8 @@ class IngredientServiceImplTest {
         return new IngredientResponseDTO(1, "Pepperoni", 20);
     }
 
-    private IngredientResponseDTO creerMozarellaResponseDTO() {
-        return new IngredientResponseDTO(2, "Mozarella", 35);
+    private IngredientResponseDTO creerMozzarellaResponseDTO() {
+        return new IngredientResponseDTO(2, "Mozzarella", 35);
     }
 
     private IngredientRequestDTO creerPepperoniRequestDTO() {
