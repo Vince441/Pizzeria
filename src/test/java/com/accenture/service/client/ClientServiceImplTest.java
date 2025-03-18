@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceImplTest {
+class ClientServiceImplTest {
     @Mock
     private ClientDAO clientDAO;
     @Mock
@@ -78,6 +78,12 @@ public class ClientServiceImplTest {
         assertDoesNotThrow(() -> clientService.supprimer(44));
         Mockito.verify(clientDAO).existsById(44);
         Mockito.verify(clientDAO).deleteById(44);
+    }
+
+    @Test
+    void testTrouver() {
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> clientService.trouver(44));
+        assertEquals("Le client n'existe pas.", ex.getMessage());
     }
 
     /*

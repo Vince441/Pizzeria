@@ -11,4 +11,5 @@ public interface ClientService {
     ClientResponseDTO ajouter(ClientRequestDTO clientRequestDTO) throws ClientException;
     void supprimer(int id) throws EntityNotFoundException;
     List<ClientResponseDTO> trouverTous();
+    ClientResponseDTO trouver(int id);
 }
