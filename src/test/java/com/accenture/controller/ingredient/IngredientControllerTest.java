@@ -2,7 +2,6 @@ package com.accenture.controller.ingredient;
 
 import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.service.dto.ingredient.IngredientRequestDTO;
-import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -16,14 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class IngredientControllerTest {
+class IngredientControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
