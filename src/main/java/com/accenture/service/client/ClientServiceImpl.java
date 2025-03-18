@@ -67,6 +67,10 @@ public class ClientServiceImpl implements ClientService {
         if (clientRequestDTO.email() == null
                 || clientRequestDTO.email().isBlank())
             throw new ClientException("L'email doit être renseigné.");
+        if (clientRequestDTO.totalAchat() == null)
+            throw new ClientException("Le total des achats doit être renseigné.");
+        if (clientRequestDTO.totalAchat() < 0)
+            throw new ClientException("Le total des achats ne peut être négatif.");
     }
 
     private ClientResponseDTO retourneClientResponseApresAjout(ClientRequestDTO clientRequestDTO) {
