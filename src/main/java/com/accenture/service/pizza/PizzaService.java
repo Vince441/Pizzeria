@@ -5,6 +5,8 @@ import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 
+import java.util.List;
+
 public interface PizzaService {
 
     PizzaResponseDto ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException;
@@ -15,4 +17,7 @@ public interface PizzaService {
     PizzaResponseDto modifierPartiellement(int id, PizzaRequestDto pizzaRequestDto) throws PizzaException;
 
 
+    List<Pizza> trouverTous();
+
 }
+

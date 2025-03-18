@@ -45,4 +45,9 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.type").value("Erreur validation"))
                 .andExpect(jsonPath("$.message").value("Le nom est obligatoire"));
     }
+
+
+
+
+
 }

@@ -9,6 +9,7 @@ import com.accenture.service.mapper.PizzaMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,6 +55,11 @@ public class PizzaServiceImpl implements PizzaService {
         return pizzaMapper.toPizzaResponseDto(modifPizza);
 
 
+    }
+
+    @Override
+    public List<Pizza> trouverTous() {
+        return pizzaDao.findAll();
     }
 
     private void remplacer(Pizza pizzaExistante, Pizza pizzaEnreg) {
