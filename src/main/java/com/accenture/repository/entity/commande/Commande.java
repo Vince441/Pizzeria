@@ -2,6 +2,8 @@ package com.accenture.repository.entity.commande;
 
 import com.accenture.repository.entity.client.Client;
 import com.accenture.repository.entity.pizza.Pizza;
+import com.accenture.shared.Statut;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +13,14 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Commande {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @OneToMany
     private Client client;
+    @OneToMany
     private List<Pizza> listePizzas;
     private Statut statut;
     private Double prixTotal;

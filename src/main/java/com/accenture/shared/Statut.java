@@ -1,4 +1,4 @@
-package com.accenture.repository.entity.commande;
+package com.accenture.shared;
 
 public enum Statut {
     EN_ATTENTE,
