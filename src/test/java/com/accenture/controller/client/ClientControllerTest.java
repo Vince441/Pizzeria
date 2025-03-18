@@ -24,7 +24,7 @@ class ClientControllerTest {
 
     @Test
     void testPostClientAvecObjet() throws Exception {
-        Client client = new Client("THEBAULT", "Elian", "elian@mail.com");
+        Client client = new Client("THEBAULT", "Elian", "elian@mail.fr", 0);
         mockMvc.perform(MockMvcRequestBuilders.post("/clients")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(client)))
@@ -36,18 +36,33 @@ class ClientControllerTest {
 
     @Test
     void testPostClientFail() throws Exception {
-        Client client = new Client(null, "Elian", "elian@mail.com");
+        Client client = new Client(null, "Elian", "elian@mail.fr", 0);
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/clients")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(client)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.type").value("Erreur validation"))
-                .andExpect(jsonPath("$.message").value("Le nom est obligatoire"));
+                .andExpect(jsonPath("$.message").value("Le nom doit être renseigné."));
     }
 
+    @Test
+    void testTrouverFail() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/clients/44"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur base"))
+                .andExpect(jsonPath("$.message").value("Le client n'existe pas."));
+    }
 
-
-
-
+    @Test
+    void testGetClientSuccess() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/clients/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nom").value("THEBAULT"))
+                .andExpect(jsonPath("$.prenom").value("Elian"))
+                .andExpect(jsonPath("$.email").value("elian@mail.fr"));
+    }
 }

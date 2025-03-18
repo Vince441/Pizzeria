@@ -1,4 +1,4 @@
-package com.accenture.service.mapper;
+package com.accenture.service.mapper.pizza;
 
 
 import com.accenture.repository.entity.pizza.Pizza;

@@ -1,7 +1,11 @@
 INSERT INTO CLIENT (nom, prenom, email) VALUES
 ('THEBAULT', 'Elian', 'elian@mail.fr'),
-('LOUVART DE PONTLEVOYE', 'Vincent', 'vincent@mail');
+('LOUVART DE PONTLEVOYE', 'Vincent', 'vincent@mail.fr');
 
+
+INSERT INTO INGREDIENT (nom, stock) VALUES
+('Pepperoni', 50),
+('Mozzarella', 35);
 
 INSERT INTO PIZZA(id, nom)
 VALUES
