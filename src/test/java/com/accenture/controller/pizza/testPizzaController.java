@@ -1,5 +1,6 @@
 package com.accenture.controller.pizza;
 
+import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.shared.Taille;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,8 +32,9 @@ public class testPizzaController {
     @Test
     void testPostPizzaAvecObject() throws Exception {
         HashMap<Taille, Double> tarifTaille = getTailleDoubleHashMap();
+        List<Ingredient> listeIngredients = List.of(new Ingredient("Pepperoni", 40), new Ingredient("Mozarella", 30));
 
-        Pizza pizza = new Pizza("Burger", tarifTaille);
+        Pizza pizza = new Pizza("Burger", tarifTaille, listeIngredients);
         mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(pizza)))

@@ -17,10 +17,12 @@ public class Client {
     private String nom;
     private String prenom;
     private String email;
+    private Integer totalAchat;
 
-    public Client(String nom, String prenom, String email) {
+    public Client(String nom, String prenom, String email, Integer totalAchat) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.totalAchat = totalAchat;
     }
 }

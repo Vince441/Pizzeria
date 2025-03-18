@@ -24,7 +24,7 @@ class ClientControllerTest {
 
     @Test
     void testPostClientAvecObjet() throws Exception {
-        Client client = new Client("THEBAULT", "Elian", "elian@mail.fr");
+        Client client = new Client("THEBAULT", "Elian", "elian@mail.fr", 0);
         mockMvc.perform(MockMvcRequestBuilders.post("/clients")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(client)))
@@ -36,7 +36,7 @@ class ClientControllerTest {
 
     @Test
     void testPostClientFail() throws Exception {
-        Client client = new Client(null, "Elian", "elian@mail.fr");
+        Client client = new Client(null, "Elian", "elian@mail.fr", 0);
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/clients")
                                 .contentType(MediaType.APPLICATION_JSON)

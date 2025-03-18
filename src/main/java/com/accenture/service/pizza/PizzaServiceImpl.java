@@ -3,9 +3,9 @@ package com.accenture.service.pizza;
 import com.accenture.exception.PizzaException;
 import com.accenture.repository.dao.pizza.PizzaDao;
 import com.accenture.repository.entity.pizza.Pizza;
-import com.accenture.service.dto.pizza.PizzaRequestDto;
-import com.accenture.service.dto.pizza.PizzaResponseDto;
-import com.accenture.service.mapper.PizzaMapper;
+import com.accenture.service.dto.pizza.PizzaRequestDTO;
+import com.accenture.service.dto.pizza.PizzaResponseDTO;
+import com.accenture.service.mapper.pizza.PizzaMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class PizzaServiceImpl implements PizzaService {
 
 
     @Override
-    public PizzaResponseDto ajouter(PizzaRequestDto pizzaRequestDto) throws PizzaException {
+    public PizzaResponseDTO ajouter(PizzaRequestDTO pizzaRequestDto) throws PizzaException {
         verificationPizza(pizzaRequestDto);
 
         Pizza pizza = pizzaMapper.toPizza(pizzaRequestDto);
@@ -41,7 +41,7 @@ public class PizzaServiceImpl implements PizzaService {
 
 
     @Override
-    public PizzaResponseDto modifierPartiellement(int id, PizzaRequestDto pizzaRequestDto) throws PizzaException {
+    public PizzaResponseDTO modifierPartiellement(int id, PizzaRequestDTO pizzaRequestDto) throws PizzaException {
         Optional<Pizza> optPizza = pizzaDao.findById(id);
         if (optPizza.isEmpty())
             throw new PizzaException("Je n'ai pas trouvé la pizza");
@@ -64,7 +64,7 @@ public class PizzaServiceImpl implements PizzaService {
 
 //Methode privée //
 
-    private static void verificationPizza(PizzaRequestDto pizzaRequestDto) {
+    private static void verificationPizza(PizzaRequestDTO pizzaRequestDto) {
         if (pizzaRequestDto == null)
             throw new PizzaException("La pizza doit exister");
         if (pizzaRequestDto.nom() == null)

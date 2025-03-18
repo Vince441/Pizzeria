@@ -4,6 +4,7 @@ public record ClientResponseDTO(
         Integer id,
         String nom,
         String prenom,
-        String email
+        String email,
+        Integer totalAchat
 ) {
 }
