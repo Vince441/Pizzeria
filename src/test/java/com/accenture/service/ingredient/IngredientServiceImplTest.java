@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -78,6 +79,25 @@ class IngredientServiceImplTest {
         verify(ingredientDAO).findAll();
     }
 
+    @Test
+    void modifierSuccess() {
+        int id = 1;
+        IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
+        Ingredient ingredientExistant = creerPepperoni();
+        Ingredient ingredientModifie = creerPepperoni();
+        IngredientResponseDTO ingredientResponseAttendu = creerAutrePepperoniResponseDTO();
+
+        when(ingredientDAO.findById(id)).thenReturn(Optional.of(ingredientExistant));
+        when(ingredientMapper.toIngredient(ingredientRequestDTO)).thenReturn(ingredientModifie);
+        when(ingredientDAO.save(ingredientExistant)).thenReturn((ingredientModifie));
+        when(ingredientMapper.toIngredientResponseDTO(ingredientModifie)).thenReturn(ingredientResponseAttendu);
+
+        IngredientResponseDTO resultat = ingredientService.modifier(id, ingredientRequestDTO);
+
+        assertEquals(ingredientResponseAttendu, resultat);
+        verify(ingredientDAO).save(ingredientExistant);
+    }
+
     /*
      * METHODES PRIVEES
      */
@@ -92,6 +112,10 @@ class IngredientServiceImplTest {
 
     private IngredientResponseDTO creerPepperoniResponseDTO() {
         return new IngredientResponseDTO(1, "Pepperoni", 50);
+    }
+
+    private IngredientResponseDTO creerAutrePepperoniResponseDTO() {
+        return new IngredientResponseDTO(1, "Pepperoni", 20);
     }
 
     private IngredientResponseDTO creerMozarellaResponseDTO() {

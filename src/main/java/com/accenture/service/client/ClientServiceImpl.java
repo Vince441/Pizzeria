@@ -42,6 +42,12 @@ public class ClientServiceImpl implements ClientService {
                 .toList();
     }
 
+    //@Override
+    //public ClientResponseDTO trouver(int id) {
+    //    if (clientDAO.existsById(id))
+    //    return null;
+    //}
+
     /*
      * METHODES PRIVEES
      */
