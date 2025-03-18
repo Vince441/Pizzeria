@@ -5,8 +5,8 @@ import com.accenture.repository.dao.pizza.PizzaDao;
 import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.ingredient.IngredientRequestDTO;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
-import com.accenture.service.dto.pizza.PizzaRequestDTO;
-import com.accenture.service.dto.pizza.PizzaResponseDTO;
+import com.accenture.service.dto.pizza.PizzaRequestDto;
+import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.pizza.PizzaMapper;
 import com.accenture.shared.Taille;
 import jakarta.persistence.EntityNotFoundException;
@@ -49,7 +49,7 @@ public class testPizzaServiceImplTest {
     void testAjouterPizzaNomNull() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
         List<IngredientRequestDTO> listeIngredientRequestDTOs = List.of(new IngredientRequestDTO("Pepperoni", 40), new IngredientRequestDTO("Mozzarella", 20));
-        PizzaRequestDTO dto = new PizzaRequestDTO(null, tarifTaille, listeIngredientRequestDTOs);
+        PizzaRequestDto dto = new PizzaRequestDto(null, tarifTaille, listeIngredientRequestDTOs);
         PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
         assertEquals("Le nom est obligatoire", pe.getMessage());
     }
@@ -58,7 +58,7 @@ public class testPizzaServiceImplTest {
     void testAjouterPizzaNomBlank() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
-        PizzaRequestDTO dto = new PizzaRequestDTO("\n", tarifTaille, creerListeIngredientRequestDTOs());
+        PizzaRequestDto dto = new PizzaRequestDto("\n", tarifTaille, creerListeIngredientRequestDTOs());
         PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
         assertEquals("Le nom est obligatoire", pe.getMessage());
     }
@@ -67,7 +67,7 @@ public class testPizzaServiceImplTest {
     void testAjouterPizzaTailleNull(){
         Map<Taille, Double> tarifTaille = new HashMap<>();
         tarifTaille.put(null, 12.00);
-        PizzaRequestDTO dto = new PizzaRequestDTO("Kebab",tarifTaille, creerListeIngredientRequestDTOs());
+        PizzaRequestDto dto = new PizzaRequestDto("Kebab",tarifTaille, creerListeIngredientRequestDTOs());
 
         PizzaException pe = assertThrows(PizzaException.class, () -> service.ajouter(dto));
         assertEquals("La taille est obligatoire", pe.getMessage());
@@ -79,11 +79,11 @@ public class testPizzaServiceImplTest {
     void testAjouterOk() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
-        PizzaRequestDTO requestDto = new PizzaRequestDTO("Margarita", tarifTaille, creerListeIngredientRequestDTOs());
+        PizzaRequestDto requestDto = new PizzaRequestDto("Margarita", tarifTaille, creerListeIngredientRequestDTOs());
         Pizza pizzaAvantEnreg = creePizza();
 
         Pizza pizzaApresEnreg = creePizza();
-        PizzaResponseDTO responseDto = creePizzaResponseDto();
+        PizzaResponseDto responseDto = creePizzaResponseDto();
 
         Mockito.when(mapperMock.toPizza(requestDto)).thenReturn(pizzaAvantEnreg);
         Mockito.when(daoMock.save(pizzaAvantEnreg)).thenReturn(pizzaApresEnreg);
@@ -119,8 +119,8 @@ public class testPizzaServiceImplTest {
 
 
         Pizza pizzaExistante = creePizza();
-        PizzaResponseDTO pizzaEnreg = creePizzaResponseDto();
-        PizzaRequestDTO pizzaRequestDto = new PizzaRequestDTO("Bolognaise", tarifTaille, creerListeIngredientRequestDTOs());
+        PizzaResponseDto pizzaEnreg = creePizzaResponseDto();
+        PizzaRequestDto pizzaRequestDto = new PizzaRequestDto("Bolognaise", tarifTaille, creerListeIngredientRequestDTOs());
 
 
         Mockito.when(daoMock.findById(id)).thenReturn(Optional.of(pizzaExistante));
@@ -128,7 +128,7 @@ public class testPizzaServiceImplTest {
         Mockito.when(daoMock.save(pizzaExistante)).thenReturn(pizzaExistante);
         Mockito.when(mapperMock.toPizzaResponseDto(pizzaExistante)).thenReturn(pizzaEnreg);
 
-        PizzaResponseDTO result = service.modifierPartiellement(id, pizzaRequestDto);
+        PizzaResponseDto result = service.modifierPartiellement(id, pizzaRequestDto);
         assertNotNull(result);
         assertEquals(pizzaEnreg, result);
         Mockito.verify(daoMock).findById(id);
@@ -156,10 +156,10 @@ public class testPizzaServiceImplTest {
         return p;
     }
 
-    private static PizzaResponseDTO creePizzaResponseDto() {
+    private static PizzaResponseDto creePizzaResponseDto() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
-        return new PizzaResponseDTO(1, "Margarita", tarifTaille, creerListeIngredientReponseDTOs());
+        return new PizzaResponseDto(1, "Margarita", tarifTaille, creerListeIngredientReponseDTOs());
     }
 
     private static Map<Taille, Double> getTailleDoubleHashMap() {

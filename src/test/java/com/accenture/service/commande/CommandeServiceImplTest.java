@@ -12,8 +12,8 @@ import com.accenture.service.dto.commande.CommandeRequestDTO;
 import com.accenture.service.dto.commande.CommandeResponseDTO;
 import com.accenture.service.dto.ingredient.IngredientRequestDTO;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
-import com.accenture.service.dto.pizza.PizzaRequestDTO;
-import com.accenture.service.dto.pizza.PizzaResponseDTO;
+import com.accenture.service.dto.pizza.PizzaRequestDto;
+import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.commande.CommandeMapper;
 import com.accenture.shared.Statut;
 import com.accenture.shared.Taille;
@@ -74,14 +74,14 @@ public class CommandeServiceImplTest {
         return new ClientResponseDTO(1, "DUPONT", "Jean", "jean@mail.fr", 0);
     }
 
-    private List<PizzaResponseDTO> creerListePizzasResponseDTOs() {
+    private List<PizzaResponseDto> creerListePizzasResponseDTOs() {
         return List.of(creerPizzaResponseDTO(), creerPizzaResponseDTO());
     }
 
-    private PizzaResponseDTO creerPizzaResponseDTO() {
+    private PizzaResponseDto creerPizzaResponseDTO() {
         Map<Taille, Double> tarif = new HashMap<>();
         tarif.put(Taille.MOYENNE, 12.0);
-        return new PizzaResponseDTO(1, "Margherita", tarif, creerListeIngredientReponseDTOs());
+        return new PizzaResponseDto(1, "Margherita", tarif, creerListeIngredientReponseDTOs());
     }
 
     private List<IngredientResponseDTO> creerListeIngredientReponseDTOs() {
@@ -123,14 +123,14 @@ public class CommandeServiceImplTest {
         );
     }
 
-    private List<PizzaRequestDTO> creerListePizzaRequestDTOs() {
+    private List<PizzaRequestDto> creerListePizzaRequestDTOs() {
         return List.of(creerPizzaReauestDTO(), creerPizzaReauestDTO());
     }
 
-    private PizzaRequestDTO creerPizzaReauestDTO() {
+    private PizzaRequestDto creerPizzaReauestDTO() {
         Map<Taille, Double> tarif = new HashMap<>();
         tarif.put(Taille.MOYENNE, 12.0);
-        return new PizzaRequestDTO("Margherita", tarif, creerListeIngredientRequestDTOs());
+        return new PizzaRequestDto("Margherita", tarif, creerListeIngredientRequestDTOs());
     }
 
     private List<IngredientRequestDTO> creerListeIngredientRequestDTOs() {

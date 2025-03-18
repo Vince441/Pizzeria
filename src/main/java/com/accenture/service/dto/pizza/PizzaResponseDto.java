@@ -6,7 +6,7 @@ import com.accenture.shared.Taille;
 import java.util.Map;
 import java.util.List;
 
-public record PizzaResponseDTO(
+public record PizzaResponseDto(
         int id,
         String nom,
         Map<Taille, Double> tarifTaille,

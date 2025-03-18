@@ -2,15 +2,15 @@ package com.accenture.service.mapper.pizza;
 
 
 import com.accenture.repository.entity.pizza.Pizza;
-import com.accenture.service.dto.pizza.PizzaRequestDTO;
-import com.accenture.service.dto.pizza.PizzaResponseDTO;
+import com.accenture.service.dto.pizza.PizzaRequestDto;
+import com.accenture.service.dto.pizza.PizzaResponseDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PizzaMapper {
 
-    Pizza toPizza(PizzaRequestDTO pizzaRequestDto);
+    Pizza toPizza(PizzaRequestDto pizzaRequestDto);
 
-    PizzaResponseDTO toPizzaResponseDto(Pizza pizza);
+    PizzaResponseDto toPizzaResponseDto(Pizza pizza);
 
 }
