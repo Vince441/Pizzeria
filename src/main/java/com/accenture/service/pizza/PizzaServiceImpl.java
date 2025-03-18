@@ -7,9 +7,11 @@ import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.PizzaMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class PizzaServiceImpl implements PizzaService {
 
     private final PizzaDao pizzaDao;
@@ -69,7 +71,7 @@ public class PizzaServiceImpl implements PizzaService {
             throw new PizzaException("Le nom est obligatoire");
         if (pizzaRequestDto.nom().isBlank())
             throw new PizzaException("Le nom est obligatoire");
-        if(pizzaRequestDto.tarifTaille() == null)
+        if(pizzaRequestDto.tarifTaille() == null || pizzaRequestDto.tarifTaille().containsKey(null))
             throw new PizzaException("La taille est obligatoire");
     }
 

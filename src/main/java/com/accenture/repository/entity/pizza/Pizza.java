@@ -17,6 +17,7 @@ import java.util.HashMap;
 @Data
 @Entity
 public class Pizza {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
