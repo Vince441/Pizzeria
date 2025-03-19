@@ -3,6 +3,7 @@ package com.accenture.controller.pizza;
 
 import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.repository.entity.pizza.Pizza;
+import com.accenture.service.dto.ingredient.IngredientRequestDTO;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.pizza.PizzaService;
@@ -10,20 +11,15 @@ import com.accenture.shared.Taille;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,19 +34,25 @@ public class TestPizzaController {
     private ObjectMapper objectMapper;
 
 
-
-
     @Test
     void testPostPizzaAvecObject() throws Exception {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        Pizza pizza = new Pizza("4 fromages", tarifTaille, creerListeIngredients());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
+        List<Ingredient> ListeIngredients = creerListeIngredients();
+
+
+        Pizza pizza = new Pizza("Reine", tarifTaille, ListeIngredients) {
+        };
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/pizzas")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pizza)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.nom").value("4 fromages"))
-                .andExpect(jsonPath("$.tarifTaille.GRANDE").value(17.0));
+                .andExpect(jsonPath("$.nom").value("Reine"))
+                .andExpect(jsonPath("$.tarifTaille.GRANDE").value(17.0))
+                .andExpect(jsonPath("$.listeIngredients[0].nom").value("Pepperoni"))
+                .andExpect(jsonPath("$.listeIngredients[1].nom").value("Mozzarella"));
+
     }
 
 
@@ -58,7 +60,7 @@ public class TestPizzaController {
     void testPostPizzaFail() throws Exception {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
         Pizza pizza = new Pizza(null, tarifTaille, creerListeIngredients());
-        mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pizzas")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pizza)))
                 .andExpect(status().isBadRequest())
@@ -80,23 +82,50 @@ public class TestPizzaController {
 
 
     @Test
-    void testTrouverParId() throws Exception {
-        PizzaResponseDto pizzaResponseDto = getPizzaResponseDto1();
+    void supprimerPizza() throws Exception {
+        mockMvc
+                .perform(MockMvcRequestBuilders.delete("/pizzas/id/1"))
+                .andExpect(status().isNoContent());
+    }
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/pizza/id/10"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nom").value("Margarita"));
-
+    @Test
+    void deletePizzapasOk() throws Exception{
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/pizzas/id/20"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.type").value("Erreur base"))
+                .andExpect(jsonPath("$.message").value("Pizza non trouvé"));
 
     }
 
     @Test
-    void testTrouverParNom() throws Exception {
-        PizzaResponseDto pizzaResponseDto = getPizzaResponseDto1();
+    void modifierPizza() throws Exception{
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/pizza/nom/Margarita"))
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/pizzas/id/1"))
+                .andExpect(status().isOk())
+        )
+
+
+    }
+
+
+
+    @Test
+    void testTrouverParId() throws Exception {
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/id/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.nom").value("Margarita"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nom").value("4 fromages"));
+    }
+
+    @Test
+    void testTrouverParNom() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/pizzas/nom/Saumon Buratta"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nom").value("Saumon Buratta"));
 
     }
 
@@ -113,28 +142,5 @@ public class TestPizzaController {
         tarifTaille.put(Taille.GRANDE, 17.00);
         return tarifTaille;
     }
-
-    private static Pizza getPizza() {
-        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new Pizza("Margarita", tarifTaille, creerListeIngredients());
-    }
-
-    private static Pizza getPizza2() {
-        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new Pizza("Reine", tarifTaille, creerListeIngredients());
-    }
-
-    private static PizzaResponseDto getPizzaResponseDto1() {
-        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new PizzaResponseDto(1, "Margarita", tarifTaille, creerListeIngredientReponseDTOs());
-
-    }
-
-    private static PizzaResponseDto getPizzaResponseDto2() {
-        Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new PizzaResponseDto(2, "Reine", tarifTaille, creerListeIngredientReponseDTOs());
-
-    }
-
 
 }

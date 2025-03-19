@@ -7,10 +7,11 @@ INSERT INTO INGREDIENT (nom, stock) VALUES
 ('Pepperoni', 50),
 ('Mozzarella', 35);
 
-INSERT INTO PIZZA(id, nom)
+INSERT INTO PIZZA (nom)
 VALUES
-    (1, '4 fromages'),
-    (2, 'Saumon Buratta');
+    ('4 fromages'),
+    ('Saumon Buratta');
+
 
 INSERT INTO pizza_prix (pizza_id, tarif_taille_key, prix)
 VALUES

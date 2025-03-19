@@ -38,6 +38,12 @@ public class PizzaController {
         return ResponseEntity.ok(trouve);
     }
 
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<PizzaResponseDto> supprimerPizza(@PathVariable("id") int id) {
+        pizzaService.supprimer(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
 
     @GetMapping("/nom/{nom}")
     public ResponseEntity<PizzaResponseDto> trouverParNom(@PathVariable("nom") String nom){

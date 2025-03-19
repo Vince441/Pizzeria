@@ -30,6 +30,8 @@ public class Pizza {
     @MapKeyEnumerated(EnumType.STRING)
     @Column(name = "prix")
     private Map<Taille, Double> tarifTaille;
+
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Ingredient> listeIngredients;
 
 
