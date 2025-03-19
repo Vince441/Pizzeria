@@ -46,12 +46,6 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientMapper.toIngredientResponseDTO(ingredientDAO.save(ingredientExistant));
     }
 
-//    @Override
-//    public IngredientResponseDTO decrementerIngredient(Ingredient ingredient) {
-//        ingredient.setStock(ingredient.getStock() - 1);
-//        IngredientRequestDTO ingredientRequestDTO = ingredientMapper.toIngredientRequestDTO(ingredient);
-//        return modifier(ingredient.getId(), ingredientRequestDTO);
-//    }
 
     /*
      * METHODES PRIVEES

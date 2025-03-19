@@ -23,4 +23,8 @@ public class Ingredient {
         this.nom = nom;
         this.stock = stock;
     }
+
+    public Ingredient(String nom) {
+        this.nom = nom;
+    }
 }
