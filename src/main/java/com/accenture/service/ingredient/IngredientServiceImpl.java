@@ -47,8 +47,6 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
 
-
-
     /*
      * METHODES PRIVEES
      */
