@@ -28,4 +28,14 @@ public class ClientController {
     ResponseEntity<List<ClientResponseDTO>> trouverTous(){
         return ResponseEntity.ok(clientService.trouverTous());
     }
+
+    @GetMapping("/{id}")
+    ResponseEntity<ClientResponseDTO> trouver(@PathVariable("id") int id) {
+        ClientResponseDTO clientResponseDTO = clientService.trouver(id);
+        return ResponseEntity.ok(clientResponseDTO);
+    }
+
+
+
+
 }

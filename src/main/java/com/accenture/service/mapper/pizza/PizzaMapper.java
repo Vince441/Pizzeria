@@ -1,4 +1,4 @@
-package com.accenture.service.mapper;
+package com.accenture.service.mapper.pizza;
 
 
 import com.accenture.repository.entity.pizza.Pizza;
@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 public interface PizzaMapper {
 
     Pizza toPizza(PizzaRequestDto pizzaRequestDto);
-
     PizzaResponseDto toPizzaResponseDto(Pizza pizza);
+    Pizza toPizzaFromResponse(PizzaResponseDto pizzaResponseDto);
 
 }

@@ -16,12 +16,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceImplTest {
+class ClientServiceImplTest {
     @Mock
     private ClientDAO clientDAO;
     @Mock
@@ -37,15 +39,17 @@ public class ClientServiceImplTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            ", Elian, elian@mail.fr, Le nom doit être renseigné.",
-            "'', Elian, elian@mail.fr, Le nom doit être renseigné.",
-            "THEBAULT, , elian@mail.fr, Le prénom doit être renseigné.",
-            "THEBAULT, '', elian@mail.fr, Le prénom doit être renseigné.",
-            "THEBAULT, Elian, , L'email doit être renseigné.",
-            "THEBAULT, Elian, '', L'email doit être renseigné."
+            ", Elian, elian@mail.fr, 0, Le nom doit être renseigné.",
+            "'', Elian, elian@mail.fr, 0, Le nom doit être renseigné.",
+            "THEBAULT, , elian@mail.fr, 0, Le prénom doit être renseigné.",
+            "THEBAULT, '', elian@mail.fr, 0, Le prénom doit être renseigné.",
+            "THEBAULT, Elian, , 0, L'email doit être renseigné.",
+            "THEBAULT, Elian, '', 0, L'email doit être renseigné.",
+            "THEBAULT, Elian, elian@mail.fr, , Le total des achats doit être renseigné.",
+            "THEBAULT, Elian, elian@mail.fr, -5, Le total des achats ne peut être négatif."
     })
-    void ajouterFail(String nom, String prenom, String email, String expected) {
-        ClientRequestDTO clientRequestDTO = new ClientRequestDTO(nom, prenom, email);
+    void ajouterFail(String nom, String prenom, String email, Integer totalAchat, String expected) {
+        ClientRequestDTO clientRequestDTO = new ClientRequestDTO(nom, prenom, email, totalAchat);
         ClientException clientException = assertThrows(ClientException.class, () -> clientService.ajouter(clientRequestDTO));
         assertEquals(expected, clientException.getMessage());
     }
@@ -80,6 +84,23 @@ public class ClientServiceImplTest {
         Mockito.verify(clientDAO).deleteById(44);
     }
 
+    @Test
+    void testTrouverFail() {
+        when(clientDAO.existsById(44)).thenReturn(false);
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> clientService.trouver(44));
+        assertEquals("Le client n'existe pas.", ex.getMessage());
+    }
+
+    @Test
+    void testTrouverSuccess() {
+        ClientResponseDTO clientResponseDTO = creerClientResponseDTO();
+        Optional<Client> optionalClient = Optional.of(creerClient());
+        when(clientDAO.existsById(1)).thenReturn(true);
+        when(clientDAO.findById(1)).thenReturn(optionalClient);
+        when(clientService.trouver(1)).thenReturn(clientResponseDTO);
+        assertEquals(clientService.trouver(1), clientResponseDTO);
+    }
+
     /*
      * METHODES PRIVEES
      */
@@ -89,7 +110,8 @@ public class ClientServiceImplTest {
                 1,
                 "THEBAULT",
                 "Elian",
-                "elian@mail.fr"
+                "elian@mail.fr",
+                0
         );
     }
 
@@ -97,12 +119,13 @@ public class ClientServiceImplTest {
         return new Client(
                 "THEBAULT",
                 "Elian",
-                "elian@mail.com"
+                "elian@mail.com",
+                0
         );
     }
 
     private ClientRequestDTO creerClientRequestDTO() {
-        return new ClientRequestDTO("THEBAULT", "Elian", "elian@mail.fr");
+        return new ClientRequestDTO("THEBAULT", "Elian", "elian@mail.fr", 0);
     }
 
 }

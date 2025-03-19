@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -42,9 +43,39 @@ public class ClientServiceImpl implements ClientService {
                 .toList();
     }
 
+    @Override
+    public ClientResponseDTO trouver(int id) throws EntityNotFoundException {
+        if (!clientDAO.existsById(id))
+            throw new EntityNotFoundException("Le client n'existe pas.");
+        Optional<Client> optionalClient = clientDAO.findById(id);
+        return clientMapper.toClientResponseDTO(optionalClient.get());
+    }
+
+    @Override
+    public void modifier(int id, ClientRequestDTO clientRequestDTO) {
+        if (!clientDAO.existsById(id))
+            throw new EntityNotFoundException("Le client n'existe pas");
+        Optional<Client> optionalClient = clientDAO.findById(id);
+        Client clientExistant = optionalClient.get();
+        Client clientModifie = clientMapper.toClient(clientRequestDTO);
+        comparerClient(clientModifie, clientExistant);
+        //return clientMapper.toClientResponseDTO(clientDAO.save(clientExistant));
+    }
+
     /*
      * METHODES PRIVEES
      */
+
+    private static void comparerClient(Client clientModifie, Client clientExistant) {
+        if (clientModifie.getNom() != null)
+            clientExistant.setNom(clientModifie.getNom());
+        if (clientModifie.getPrenom() != null)
+            clientExistant.setPrenom(clientModifie.getPrenom());
+        if (clientModifie.getEmail() != null)
+            clientExistant.setEmail(clientModifie.getEmail());
+        if (clientModifie.getTotalAchat() != null)
+            clientExistant.setTotalAchat(clientModifie.getTotalAchat());
+    }
 
     private static void validerClient(ClientRequestDTO clientRequestDTO) {
         if (clientRequestDTO == null)
@@ -58,6 +89,10 @@ public class ClientServiceImpl implements ClientService {
         if (clientRequestDTO.email() == null
                 || clientRequestDTO.email().isBlank())
             throw new ClientException("L'email doit être renseigné.");
+        if (clientRequestDTO.totalAchat() == null)
+            throw new ClientException("Le total des achats doit être renseigné.");
+        if (clientRequestDTO.totalAchat() < 0)
+            throw new ClientException("Le total des achats ne peut être négatif.");
     }
 
     private ClientResponseDTO retourneClientResponseApresAjout(ClientRequestDTO clientRequestDTO) {

@@ -5,13 +5,18 @@ import com.accenture.repository.dao.pizza.PizzaDao;
 import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
-import com.accenture.service.mapper.PizzaMapper;
+import com.accenture.service.mapper.pizza.PizzaMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PizzaServiceImpl implements PizzaService {
 
+    public static final String ID_NON_CONNU = "Id non connu";
+    public static final String NOM_INTROUVABLE = "Nom introuvable";
     private final PizzaDao pizzaDao;
     private final PizzaMapper pizzaMapper;
 
@@ -50,12 +55,33 @@ public class PizzaServiceImpl implements PizzaService {
         remplacer(pizzaExistante, pizzaEnreg);
         Pizza modifPizza = pizzaDao.save(pizzaExistante);
         return pizzaMapper.toPizzaResponseDto(modifPizza);
+    }
 
+    @Override
+    public List<Pizza> trouverTous() {
+        return pizzaDao.findAll();
+    }
 
+    @Override
+    public PizzaResponseDto findById(int id) {
+        Optional<Pizza> optPizza = pizzaDao.findById(id);
+        if (optPizza.isEmpty())
+            throw new EntityNotFoundException(ID_NON_CONNU);
+        Pizza pizza = optPizza.get();
+        return pizzaMapper.toPizzaResponseDto(pizza);
+    }
+
+    @Override
+    public PizzaResponseDto findByNom(String nom) {
+        Optional<Pizza> optPizza = pizzaDao.findByNom(nom);
+        if (optPizza.isEmpty())
+            throw new EntityNotFoundException("Je n'ai pas trouver le nom");
+        Pizza pizza = optPizza.get();
+        return pizzaMapper.toPizzaResponseDto(pizza);
     }
 
     private void remplacer(Pizza pizzaExistante, Pizza pizzaEnreg) {
-        if (pizzaExistante.getNom()== null)
+        if (pizzaExistante.getNom() == null)
             pizzaExistante.setNom(pizzaEnreg.getNom());
     }
 
@@ -69,7 +95,7 @@ public class PizzaServiceImpl implements PizzaService {
             throw new PizzaException("Le nom est obligatoire");
         if (pizzaRequestDto.nom().isBlank())
             throw new PizzaException("Le nom est obligatoire");
-        if(pizzaRequestDto.tarifTaille() == null)
+        if (pizzaRequestDto.tarifTaille() == null || pizzaRequestDto.tarifTaille().containsKey(null))
             throw new PizzaException("La taille est obligatoire");
     }
 
