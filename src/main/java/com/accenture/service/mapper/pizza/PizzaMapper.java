@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 public interface PizzaMapper {
 
     Pizza toPizza(PizzaRequestDto pizzaRequestDto);
-
     PizzaResponseDto toPizzaResponseDto(Pizza pizza);
+    Pizza toPizzaFromResponse(PizzaResponseDto pizzaResponseDto);
 
 }
