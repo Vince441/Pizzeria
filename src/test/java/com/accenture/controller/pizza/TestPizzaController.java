@@ -1,7 +1,9 @@
 package com.accenture.controller.pizza;
 
 
+import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.repository.entity.pizza.Pizza;
+import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.pizza.PizzaService;
 import com.accenture.shared.Taille;
@@ -41,7 +43,7 @@ public class TestPizzaController {
     @Test
     void testPostPizzaAvecObject() throws Exception {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        Pizza pizza = new Pizza("4 fromages", tarifTaille);
+        Pizza pizza = new Pizza("4 fromages", tarifTaille, creerListeIngredients());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,7 +57,7 @@ public class TestPizzaController {
     @Test
     void testPostPizzaFail() throws Exception {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        Pizza pizza = new Pizza(null, tarifTaille);
+        Pizza pizza = new Pizza(null, tarifTaille, creerListeIngredients());
         mockMvc.perform(MockMvcRequestBuilders.post("/pizza")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pizza)))
@@ -98,6 +100,13 @@ public class TestPizzaController {
 
     }
 
+    private static List<Ingredient> creerListeIngredients() {
+        return List.of(new Ingredient("Pepperoni", 40), new Ingredient("Mozzarella", 20));
+    }
+
+    private static List<IngredientResponseDTO> creerListeIngredientReponseDTOs() {
+        return List.of(new IngredientResponseDTO(1, "Pepperoni", 40), new IngredientResponseDTO(2, "Mozzarella", 20));
+    }
 
     private static Map<Taille, Double> getTailleDoubleHashMap() {
         Map<Taille, Double> tarifTaille = new HashMap<>();
@@ -107,23 +116,23 @@ public class TestPizzaController {
 
     private static Pizza getPizza() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new Pizza("Margarita", tarifTaille);
+        return new Pizza("Margarita", tarifTaille, creerListeIngredients());
     }
 
     private static Pizza getPizza2() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new Pizza("Reine", tarifTaille);
+        return new Pizza("Reine", tarifTaille, creerListeIngredients());
     }
 
     private static PizzaResponseDto getPizzaResponseDto1() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new PizzaResponseDto("Margarita", tarifTaille);
+        return new PizzaResponseDto(1, "Margarita", tarifTaille, creerListeIngredientReponseDTOs());
 
     }
 
     private static PizzaResponseDto getPizzaResponseDto2() {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
-        return new PizzaResponseDto("Reine", tarifTaille);
+        return new PizzaResponseDto(2, "Reine", tarifTaille, creerListeIngredientReponseDTOs());
 
     }
 
