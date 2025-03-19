@@ -34,4 +34,8 @@ public class ClientController {
         ClientResponseDTO clientResponseDTO = clientService.trouver(id);
         return ResponseEntity.ok(clientResponseDTO);
     }
+
+
+
+
 }

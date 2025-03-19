@@ -31,13 +31,21 @@ public class Pizza {
     @Column(name = "prix")
     private Map<Taille, Double> tarifTaille;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Ingredient> listeIngredients;
 
 
     public Pizza(String nom, Map<Taille, Double> tarifTaille, List<Ingredient> listeIngredients) {
         this.nom = nom;
         this.tarifTaille = tarifTaille;
+        this.listeIngredients = listeIngredients;
+    }
+
+    public Pizza(String nom) {
+        this.nom = nom;
+    }
+
+    public Pizza(List<Ingredient> listeIngredients) {
         this.listeIngredients = listeIngredients;
     }
 }

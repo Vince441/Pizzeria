@@ -11,6 +11,7 @@ import com.accenture.shared.Taille;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.*;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,16 +37,15 @@ public class TestPizzaController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Mock
+    private PizzaService pizzaService;
 
     @Test
     void testPostPizzaAvecObject() throws Exception {
         Map<Taille, Double> tarifTaille = getTailleDoubleHashMap();
 
         List<Ingredient> ListeIngredients = creerListeIngredients();
-
-
-        Pizza pizza = new Pizza("Reine", tarifTaille, ListeIngredients) {
-        };
+        Pizza pizza = new Pizza("Reine", tarifTaille, ListeIngredients);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/pizzas")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,24 +92,12 @@ public class TestPizzaController {
     }
 
     @Test
-    void deletePizzapasOk() throws Exception{
+    void deletePizzapasOk() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/pizzas/id/20"))
+                        MockMvcRequestBuilders.delete("/pizzas/id/20"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.type").value("Erreur base"))
                 .andExpect(jsonPath("$.message").value("Pizza non trouvé"));
-
-    }
-
-    @Test
-    void modifierPizza() throws Exception{
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.patch("/pizzas/id/1"))
-                .andExpect(status().isOk())
-        )
-
-
     }
 
 
