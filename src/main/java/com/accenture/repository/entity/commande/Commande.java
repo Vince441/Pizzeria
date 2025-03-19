@@ -18,7 +18,7 @@ public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToMany
+    @OneToOne
     private Client client;
     @OneToMany
     private List<Pizza> listePizzas;
