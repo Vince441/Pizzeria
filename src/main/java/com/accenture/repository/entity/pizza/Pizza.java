@@ -23,8 +23,6 @@ public class Pizza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nom;
-
-
     @ElementCollection
     @CollectionTable(name = "pizza_prix", joinColumns = @JoinColumn(name = "pizza_id"))
     @MapKeyEnumerated(EnumType.STRING)

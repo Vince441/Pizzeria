@@ -55,8 +55,6 @@ public class PizzaServiceImpl implements PizzaService {
         remplacer(pizzaExistante, pizzaEnreg);
         Pizza modifPizza = pizzaDao.save(pizzaExistante);
         return pizzaMapper.toPizzaResponseDto(modifPizza);
-
-
     }
 
     @Override
@@ -70,7 +68,7 @@ public class PizzaServiceImpl implements PizzaService {
         if (optPizza.isEmpty())
             throw new EntityNotFoundException(ID_NON_CONNU);
         Pizza pizza = optPizza.get();
-        return pizzaMapper.toPizzaResponseDto((pizza));
+        return pizzaMapper.toPizzaResponseDto(pizza);
     }
 
     @Override
@@ -79,7 +77,7 @@ public class PizzaServiceImpl implements PizzaService {
         if (optPizza.isEmpty())
             throw new EntityNotFoundException("Je n'ai pas trouver le nom");
         Pizza pizza = optPizza.get();
-        return pizzaMapper.toPizzaResponseDto((pizza));
+        return pizzaMapper.toPizzaResponseDto(pizza);
     }
 
     private void remplacer(Pizza pizzaExistante, Pizza pizzaEnreg) {

@@ -51,9 +51,31 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toClientResponseDTO(optionalClient.get());
     }
 
+    @Override
+    public void modifier(int id, ClientRequestDTO clientRequestDTO) {
+        if (!clientDAO.existsById(id))
+            throw new EntityNotFoundException("Le client n'existe pas");
+        Optional<Client> optionalClient = clientDAO.findById(id);
+        Client clientExistant = optionalClient.get();
+        Client clientModifie = clientMapper.toClient(clientRequestDTO);
+        comparerClient(clientModifie, clientExistant);
+        //return clientMapper.toClientResponseDTO(clientDAO.save(clientExistant));
+    }
+
     /*
      * METHODES PRIVEES
      */
+
+    private static void comparerClient(Client clientModifie, Client clientExistant) {
+        if (clientModifie.getNom() != null)
+            clientExistant.setNom(clientModifie.getNom());
+        if (clientModifie.getPrenom() != null)
+            clientExistant.setPrenom(clientModifie.getPrenom());
+        if (clientModifie.getEmail() != null)
+            clientExistant.setEmail(clientModifie.getEmail());
+        if (clientModifie.getTotalAchat() != null)
+            clientExistant.setTotalAchat(clientModifie.getTotalAchat());
+    }
 
     private static void validerClient(ClientRequestDTO clientRequestDTO) {
         if (clientRequestDTO == null)
