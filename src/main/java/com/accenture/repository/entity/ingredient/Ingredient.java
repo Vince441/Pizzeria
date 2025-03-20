@@ -27,4 +27,8 @@ public class Ingredient {
     public Ingredient(String nom) {
         this.nom = nom;
     }
+
+    public Ingredient(int id) {
+        this.id = id;
+    }
 }

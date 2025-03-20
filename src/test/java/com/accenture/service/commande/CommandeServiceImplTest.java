@@ -139,8 +139,8 @@ public class CommandeServiceImplTest {
         return new PizzaResponseDto(1, "Margherita", tarif, creerListeIngredientReponseDTOs());
     }
 
-    private List<IngredientResponseDTO> creerListeIngredientReponseDTOs() {
-        return List.of(new IngredientResponseDTO(1, "Pepperoni", 40), new IngredientResponseDTO(2, "Mozzarella", 40));
+    private List<String> creerListeIngredientReponseDTOs() {
+        return List.of("Pepperoni","Mozzarella");
     }
 
     private Commande creerCommande() {

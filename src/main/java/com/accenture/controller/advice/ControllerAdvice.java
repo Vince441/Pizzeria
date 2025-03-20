@@ -38,4 +38,5 @@ public class ControllerAdvice {
         MessageError me = new MessageError(LocalDateTime.now(), "Erreur base", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(me);
     }
+
 }
