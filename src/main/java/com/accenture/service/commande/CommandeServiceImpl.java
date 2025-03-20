@@ -7,8 +7,10 @@ import com.accenture.repository.entity.client.Client;
 import com.accenture.repository.entity.commande.Commande;
 import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.repository.entity.pizza.Pizza;
+import com.accenture.repository.entity.pizza.PizzaCommande;
 import com.accenture.service.client.ClientService;
 import com.accenture.service.dto.client.ClientRequestDTO;
+import com.accenture.service.dto.client.ClientResponseDTO;
 import com.accenture.service.dto.commande.CommandeRequestDTO;
 import com.accenture.service.dto.commande.CommandeResponseDTO;
 import com.accenture.service.dto.pizza.PizzaCommandeRequestDTO;
@@ -25,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CommandeServiceImpl implements CommandeService {
@@ -53,16 +54,27 @@ public class CommandeServiceImpl implements CommandeService {
     @Transactional
     public CommandeResponseDTO ajouter(CommandeRequestDTO commandeRequestDTO) throws CommandeException, IngredientException {
         validerCommande(commandeRequestDTO);
+
         Client client = clientMapper.toClient(commandeRequestDTO.clientRequestDTO());
-        List<Pizza> listePizzas = trouverListePizza(commandeRequestDTO.listePizzaCommandeRequestDTOs());
-        Double prixTotal = calculPrixTotal(commandeRequestDTO);
+
+        Double prixTotal = 0.0;
+        for (PizzaCommandeRequestDTO pizzaCommandeRequestDTO : commandeRequestDTO.listePizzaCommandeRequestDTOs()) {
+            prixTotal += pizzaCommandeRequestDTO.pizzaRequestDto().tarifTaille().get(pizzaCommandeRequestDTO.taille());
+        }
         if (verifierClientVIP(commandeRequestDTO.clientRequestDTO()))
             prixTotal  = reductionVIP(prixTotal);
-        CommandeResponseDTO commandeResponseDTO = retourneCommandeResponseApresAjout(client, listePizzas, prixTotal);
+
+        List<PizzaCommande> listePizzaCommandes = commandeRequestDTO.listePizzaCommandeRequestDTOs().stream()
+                .map(pizzaCommandeRequestDTO -> pizzaMapper.toPizzaCommande(pizzaCommandeRequestDTO))
+                .toList();
+
+        CommandeResponseDTO commandeResponseDTO = retourneCommandeResponseApresAjout(client, listePizzaCommandes, prixTotal);
+
         incrementClientTotalAchat(client);
-        //TODO incrémenter totalachat dans client
-        for (Pizza pizza : listePizzas)
-            verifierIngredients(pizza);
+
+        for (PizzaCommande pizzaCommande : listePizzaCommandes)
+            verifierIngredients(pizzaCommande.getPizza());
+
         return commandeResponseDTO;
     }
 
@@ -95,20 +107,22 @@ public class CommandeServiceImpl implements CommandeService {
         clientService.modifier(client.getId(), clientMapper.toClientRequestDTO(client));
     }
 
-    private CommandeResponseDTO retourneCommandeResponseApresAjout(Client client, List<Pizza> listePizzas, Double prixTotal) {
-        Commande commande = new Commande(client, listePizzas, Statut.EN_PREPARATION, prixTotal);
+    private CommandeResponseDTO retourneCommandeResponseApresAjout(Client client, List<PizzaCommande> listePizzaCommandes, Double prixTotal) {
+        Commande commande = new Commande(client, listePizzaCommandes, Statut.EN_PREPARATION, prixTotal);
         Commande commandeRetourne = commandeDAO.save(commande);
         return commandeMapper.toCommandeResponseDTO(commandeRetourne);
     }
 
-    private List<Pizza> trouverListePizza(List<PizzaCommandeRequestDTO> pizzaCommandeRequestDTOS) {
-        List<Pizza> listePizza = new ArrayList<>();
-        for (PizzaCommandeRequestDTO pizzaCommandeRequestDTO : pizzaCommandeRequestDTOS) {
-            Pizza pizza = pizzaMapper.toPizzaFromResponse(pizzaService.findById(pizzaCommandeRequestDTO.pizza_id()));
-            listePizza.add(pizza);
-        }
-        return listePizza;
-    }
+    //private List<PizzaCommande> trouverListePizza(List<PizzaCommandeRequestDTO> pizzaCommandeRequestDTOS) {
+    //    List<PizzaCommande> listePizzaCommandes = new ArrayList<>();
+    //    System.out.println("pizzaCommandeRequestDTOS" + pizzaCommandeRequestDTOS);
+    //    for (PizzaCommandeRequestDTO pizzaCommandeRequestDTO : pizzaCommandeRequestDTOS) {
+    //        System.out.println("pizzaCommandeRequestDTO" + pizzaCommandeRequestDTO);
+    //        //PizzaCommande pizzaCommande = pizzaMapper.
+    //        //listePizzaCommandes.add(pizzaCommande);
+    //    }
+    //    return listePizzaCommandes;
+    //}
 
     private void verifierIngredients(Pizza pizza) {
         for (Ingredient ingredient : pizza.getListeIngredients()) {
@@ -123,11 +137,10 @@ public class CommandeServiceImpl implements CommandeService {
         return prixTotal -= (prixTotal / 100) * 10;
     }
 
-    private Double calculPrixTotal(CommandeRequestDTO commandeRequestDTO) {
+    private Double calculPrixTotal(List<PizzaCommande> listePizzaCommandes) {
         Double prixTotal = 0.0;
-        for (PizzaCommandeRequestDTO pizzaCommandeRequestDTO : commandeRequestDTO.listePizzaCommandeRequestDTOs()) {
-            Pizza pizza = pizzaMapper.toPizzaFromResponse(pizzaService.findById(pizzaCommandeRequestDTO.pizza_id()));
-            prixTotal += pizza.getTarifTaille().get(pizzaCommandeRequestDTO.taille());
+        for (PizzaCommande pizzaCommande : listePizzaCommandes) {
+            prixTotal += pizzaCommande.getPizza().getTarifTaille().get(pizzaCommande.getTaille());
         }
         return prixTotal;
     }
