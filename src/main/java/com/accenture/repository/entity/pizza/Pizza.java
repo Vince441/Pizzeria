@@ -46,4 +46,14 @@ public class Pizza {
     public Pizza(List<Ingredient> listeIngredients) {
         this.listeIngredients = listeIngredients;
     }
+
+    public Pizza(String nom, Map<Taille, Double> tarifTaille) {
+        this.nom = nom;
+        this.tarifTaille = tarifTaille;
+    }
+
+    public Pizza(int id, List<Ingredient> listeIngredients) {
+        this.id = id;
+        this.listeIngredients = listeIngredients;
+    }
 }

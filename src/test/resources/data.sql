@@ -5,7 +5,8 @@ INSERT INTO CLIENT (nom, prenom, email) VALUES
 
 INSERT INTO INGREDIENT (nom, stock) VALUES
 ('Pepperoni', 50),
-('Mozzarella', 35);
+('Mozzarella', 35),
+('Ananus', 40);
 
 INSERT INTO PIZZA (nom)
 VALUES

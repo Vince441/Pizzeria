@@ -6,10 +6,12 @@ import com.accenture.repository.entity.pizza.Pizza;
 import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.mapper.pizza.PizzaMapper;
+import com.accenture.shared.Taille;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -53,8 +55,8 @@ public class PizzaServiceImpl implements PizzaService {
         Pizza pizzaEnreg = pizzaMapper.toPizza(pizzaRequestDto);
 
         remplacer(pizzaExistante, pizzaEnreg);
-        Pizza modifPizza = pizzaDao.save(pizzaExistante);
-        return pizzaMapper.toPizzaResponseDto(modifPizza);
+
+        return pizzaMapper.toPizzaResponseDto(pizzaDao.save(pizzaExistante));
     }
 
     @Override

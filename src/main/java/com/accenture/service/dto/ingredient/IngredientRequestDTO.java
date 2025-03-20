@@ -4,4 +4,8 @@ public record IngredientRequestDTO(
         String nom,
         Integer stock
 ) {
+
+
+
+
 }
