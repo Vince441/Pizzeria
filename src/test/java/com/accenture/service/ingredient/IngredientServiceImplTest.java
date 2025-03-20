@@ -52,7 +52,7 @@ class IngredientServiceImplTest {
     }
 
     @Test
-    void ajouterSuccess() {
+    void testAjouterSuccess() {
         IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
         Ingredient ingredient = creerPepperoni();
         Ingredient returnedIngredient = creerPepperoni();
@@ -81,14 +81,14 @@ class IngredientServiceImplTest {
     }
 
     @Test
-    void mocifierFail() {
+    void testModifierFail() {
         IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
         EntityNotFoundException entityNotFoundException = assertThrows(EntityNotFoundException.class, () -> ingredientService.modifier(44, ingredientRequestDTO));
         assertEquals("L'ingredient n'existe pas", entityNotFoundException.getMessage());
     }
 
     @Test
-    void modifierSuccess() {
+    void testModifierSuccess() {
         int id = 1;
         IngredientRequestDTO ingredientRequestDTO = creerPepperoniRequestDTO();
         Ingredient ingredientExistant = creerPepperoni();

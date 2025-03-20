@@ -19,11 +19,13 @@ import com.accenture.service.mapper.ingredient.IngredientMapper;
 import com.accenture.service.mapper.pizza.PizzaMapper;
 import com.accenture.service.pizza.PizzaService;
 import com.accenture.shared.Statut;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommandeServiceImpl implements CommandeService {
@@ -62,6 +64,26 @@ public class CommandeServiceImpl implements CommandeService {
         for (Pizza pizza : listePizzas)
             verifierIngredients(pizza);
         return commandeResponseDTO;
+    }
+
+    @Override
+    public CommandeResponseDTO modifier(int id, Statut statut) throws EntityNotFoundException, CommandeException {
+        if (!commandeDAO.existsById(id))
+            throw new EntityNotFoundException("La commande n'existe pas.");
+        Commande commande = commandeDAO.findById(id).get();
+        verifierEtModifierCommande(statut, commande);
+        return commandeMapper.toCommandeResponseDTO(commandeDAO.save(commande));
+    }
+
+    private static void verifierEtModifierCommande(Statut statut, Commande commande) {
+        if (statut != null)
+            if (commande.getStatut() != Statut.EN_PREPARATION
+                    && statut == Statut.PRETE
+                    || commande.getStatut() == Statut.PRETE
+                    && statut == Statut.LIVREE)
+                commande.setStatut(statut);
+        else
+            throw new CommandeException("Le statut doit être renseigné.");
     }
 
     /*
