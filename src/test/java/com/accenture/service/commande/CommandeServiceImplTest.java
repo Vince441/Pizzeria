@@ -6,6 +6,7 @@ import com.accenture.repository.entity.client.Client;
 import com.accenture.repository.entity.commande.Commande;
 import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.repository.entity.pizza.Pizza;
+import com.accenture.repository.entity.pizza.PizzaCommande;
 import com.accenture.service.client.ClientService;
 import com.accenture.service.dto.client.ClientRequestDTO;
 import com.accenture.service.dto.client.ClientResponseDTO;
@@ -14,6 +15,7 @@ import com.accenture.service.dto.commande.CommandeResponseDTO;
 import com.accenture.service.dto.ingredient.IngredientRequestDTO;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.accenture.service.dto.pizza.PizzaCommandeRequestDTO;
+import com.accenture.service.dto.pizza.PizzaRequestDto;
 import com.accenture.service.dto.pizza.PizzaResponseDto;
 import com.accenture.service.ingredient.IngredientService;
 import com.accenture.service.mapper.client.ClientMapper;
@@ -33,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -67,17 +70,11 @@ public class CommandeServiceImplTest {
     @Test
     void testAjouterSuccess() {
         when(clientMapper.toClient(creerClientRequestDTO())).thenReturn(creerClient());
-        when(pizzaService.findById(1)).thenReturn(creerPizzaResponseDTO());
-        Pizza pizza = creerPizza();
-        when(pizzaMapper.toPizzaFromResponse(creerPizzaResponseDTO())).thenReturn(pizza);
-
-        Commande commande = creerCommande();
-        //Commande commandeRetourne = creerCommandeRetourne();
+        when(pizzaMapper.toPizzaCommande(creerPizzaCommandeRequestDTO())).thenReturn(creerPizzaCommande());
         Commande commandeRetourne = creerCommande();
         commandeRetourne.setId(1);
         CommandeRequestDTO commandeRequestDTO = creerCommandeRequestDTO();
         CommandeResponseDTO commandeResponseDTO = creerCommandeResponceDTO();
-        //when(commandeMapper.toCommande(commandeRequestDTO)).thenReturn(commande);
         when(commandeDAO.save(any())).thenReturn(commandeRetourne);
         when(commandeMapper.toCommandeResponseDTO(commandeRetourne)).thenReturn(commandeResponseDTO);
         assertEquals(commandeResponseDTO, commandeService.ajouter(commandeRequestDTO));
@@ -92,12 +89,37 @@ public class CommandeServiceImplTest {
 
     @Test
     void testModifierSuccess() {
+        int id = 1;
+        Statut statut = Statut.PRETE;
+        Statut statutRetourne = Statut.LIVREE;
+        Commande commande = creerCommande();
+        Commande commandeRetourne = creerCommande();
+        commande.setId(id);
+        commandeRetourne.setId(id);
+        commande.setStatut(statut);
+        commandeRetourne.setStatut(statutRetourne);
 
+        CommandeResponseDTO commandeResponseDTO = commandeMapper.toCommandeResponseDTO(commandeRetourne);
+
+        when(commandeDAO.existsById(id)).thenReturn(true);
+        when(commandeDAO.findById(id)).thenReturn(Optional.of(commande));
+        when(commandeDAO.save(commande)).thenReturn(commandeRetourne);
+        when(commandeMapper.toCommandeResponseDTO(commandeRetourne)).thenReturn(commandeResponseDTO);
+        assertEquals(commandeResponseDTO, commandeService.modifier(id, statut));
+        verify(commandeDAO).save(commande);
     }
 
     /*
      * METHODES PRIVEES
      */
+
+    private List<PizzaCommande> creerListePizzaCommande() {
+        return List.of(creerPizzaCommande(), creerPizzaCommande());
+    }
+
+    private PizzaCommande creerPizzaCommande() {
+        return new PizzaCommande(creerPizza(), Taille.MOYENNE);
+    }
 
     private CommandeResponseDTO creerCommandeResponceDTO() {
         return new CommandeResponseDTO(1, creerClientResponseDTO(), creerListePizzasResponseDTOs(), Statut.EN_PREPARATION, 24.0);
@@ -122,12 +144,12 @@ public class CommandeServiceImplTest {
     }
 
     private Commande creerCommande() {
-        return new Commande(creerClient(), creerListePizzas(), Statut.EN_PREPARATION, 24.0);
+        return new Commande(creerClient(), creerListePizzaCommande(), Statut.EN_PREPARATION, 24.0);
     }
 
-    private Commande creerCommandeRetourne() {
-        return new Commande(1, creerClient(), creerListePizzaDecrementes(), Statut.EN_PREPARATION, 24.0);
-    }
+    //private Commande creerCommandeRetourne() {
+    //    return new Commande(1, creerClient(), creerListePizzaDecrementes(), Statut.EN_PREPARATION, 24.0);
+    //}
 
     private Client creerClient() {
         return new Client(1, "DUPONT", "Jean", "jean@mail.fr", 0);
@@ -137,9 +159,9 @@ public class CommandeServiceImplTest {
         return List.of(creerPizza(), creerPizza());
     }
 
-    private List<Pizza> creerListePizzaDecrementes() {
-        return List.of(creerPizzaDecrementee(), creerPizzaDecrementee());
-    }
+    //private List<PizzaCommande> creerListePizzaDecrementes() {
+    //    return List.of(creerPizzaDecrementee(), creerPizzaDecrementee());
+    //}
 
     private Pizza creerPizzaDecrementee() {
         Map<Taille, Double> tarif = new HashMap<>();
@@ -170,7 +192,7 @@ public class CommandeServiceImplTest {
     }
 
     private CommandeRequestDTO creerCommandeRequestDTO() {
-        return new CommandeRequestDTO(creerClientRequestDTO(), creerListePizzaCommandeRequestDTOs());
+        return new CommandeRequestDTO(creerClientRequestDTO(), creerListePizzaCommandeRequestDTOs(), Statut.EN_PREPARATION, 24.0);
     }
 
     private ClientRequestDTO creerClientRequestDTO() {
@@ -187,6 +209,16 @@ public class CommandeServiceImplTest {
     }
 
     private PizzaCommandeRequestDTO creerPizzaCommandeRequestDTO() {
-        return new PizzaCommandeRequestDTO(1, Taille.MOYENNE);
+        return new PizzaCommandeRequestDTO(creerPizzaRequestDTO(), Taille.MOYENNE);
+    }
+
+    private PizzaRequestDto creerPizzaRequestDTO() {
+        Map<Taille, Double> tarif = new HashMap<>();
+        tarif.put(Taille.MOYENNE, 12.0);
+        return new PizzaRequestDto("Marguerita", tarif, creerListeIngredientDTO());
+    }
+
+    private List<IngredientRequestDTO> creerListeIngredientDTO() {
+        return List.of(new IngredientRequestDTO("Pepperonni", 50), new IngredientRequestDTO("Mozzarella", 30));
     }
 }

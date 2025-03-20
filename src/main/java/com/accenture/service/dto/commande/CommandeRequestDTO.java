@@ -8,6 +8,8 @@ import java.util.List;
 
 public record CommandeRequestDTO(
         ClientRequestDTO clientRequestDTO,
-        List<PizzaCommandeRequestDTO> listePizzaCommandeRequestDTOs
+        List<PizzaCommandeRequestDTO> listePizzaCommandeRequestDTOs,
+        Statut statut,
+        Double prixTotal
 ) {
 }

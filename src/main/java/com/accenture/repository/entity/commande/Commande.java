@@ -2,6 +2,7 @@ package com.accenture.repository.entity.commande;
 
 import com.accenture.repository.entity.client.Client;
 import com.accenture.repository.entity.pizza.Pizza;
+import com.accenture.repository.entity.pizza.PizzaCommande;
 import com.accenture.shared.Statut;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,16 +19,16 @@ public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToOne
+    @ManyToOne
     private Client client;
     @OneToMany
-    private List<Pizza> listePizzas;
+    private List<PizzaCommande> listePizzaCommandes;
     private Statut statut;
     private Double prixTotal;
 
-    public Commande(Client client, List<Pizza> listePizzas, Statut statut, Double prixTotal) {
+    public Commande(Client client, List<PizzaCommande> listePizzaCommandes, Statut statut, Double prixTotal) {
         this.client = client;
-        this.listePizzas = listePizzas;
+        this.listePizzaCommandes = listePizzaCommandes;
         this.statut = statut;
         this.prixTotal = prixTotal;
     }
