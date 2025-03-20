@@ -5,7 +5,6 @@ import com.accenture.service.dto.commande.CommandeRequestDTO;
 import com.accenture.service.dto.commande.CommandeResponseDTO;
 import com.accenture.shared.Statut;
 import jakarta.persistence.EntityNotFoundException;
-import jdk.jshell.Snippet;
 
 public interface CommandeService {
     CommandeResponseDTO ajouter(CommandeRequestDTO commandeRequestDTO) throws CommandeException;
