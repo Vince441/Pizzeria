@@ -59,7 +59,7 @@ class IngredientControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/ingredients"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$.length()").value(4))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nom").value("Pepperoni"))
                 .andExpect(jsonPath("$[1].nom").value("Mozzarella"));

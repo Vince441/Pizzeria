@@ -1,5 +1,6 @@
 package com.accenture.service.dto.pizza;
 
+import com.accenture.repository.entity.ingredient.Ingredient;
 import com.accenture.service.dto.ingredient.IngredientResponseDTO;
 import com.accenture.shared.Taille;
 
@@ -10,6 +11,6 @@ public record PizzaResponseDto(
         int id,
         String nom,
         Map<Taille, Double> tarifTaille,
-        List<IngredientResponseDTO> listeIngredients
+        List<String> listeIngredients
 ) {
 }
