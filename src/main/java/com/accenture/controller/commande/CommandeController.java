@@ -21,7 +21,7 @@ public class CommandeController {
 
     @PostMapping
     ResponseEntity<CommandeResponseDTO> ajouter(@RequestBody CommandeRequestDTO commandeRequestDTO) {
-        System.out.println("commandeTempRequestDTO dans controller = " + commandeRequestDTO);
+        System.out.println("CommandeRequestDTO = " + commandeRequestDTO);
         CommandeResponseDTO commandeResponseDTO = commandeService.ajouter(commandeRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(commandeResponseDTO);
     }

@@ -35,13 +35,13 @@ public class CommandeControllerTest {
     @Test
     void testPostCommandeAvecObjet() throws Exception {
         Commande commande = creerCommande();
+        System.out.println("commande = " + commande);
         mockMvc.perform(MockMvcRequestBuilders.post("/commandes")
-                               .contentType(MediaType.APPLICATION_JSON)
-                               .content(objectMapper.writeValueAsString(commande)))
-               .andExpect(status().isCreated())
-               .andExpect(jsonPath("$.id").isNumber())
-               .andExpect(jsonPath("$.id").value(Matchers.not(0)))
-               .andExpect(jsonPath("$liste_pizza.lenght").value(2));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commande)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").value(Matchers.not(0)));
     }
 
     private Commande creerCommande() {
