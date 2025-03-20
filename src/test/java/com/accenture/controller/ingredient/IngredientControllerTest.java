@@ -69,14 +69,14 @@ class IngredientControllerTest {
     @DisplayName("d) testPatch")
     void testPatch() throws Exception {
         int id = 1;
-        IngredientRequestDTO ingredientRequestDTO = new IngredientRequestDTO(null, 40);
+        IngredientRequestDTO ingredientRequestDTO = new IngredientRequestDTO(null, 45);
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/ingredients/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ingredientRequestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.stock").value(40))
+                .andExpect(jsonPath("$.stock").value(45))
                 .andExpect(jsonPath("$.nom").value("Pepperoni"));
     }
 }

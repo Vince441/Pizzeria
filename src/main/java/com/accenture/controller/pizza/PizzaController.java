@@ -51,6 +51,12 @@ public class PizzaController {
        return ResponseEntity.ok(trouve);
     }
 
+    @PatchMapping("/id/{id}")
+    public ResponseEntity<PizzaResponseDto> modifierPartiellement(@PathVariable("id") int id, PizzaRequestDto pizzaRequestDto){
+        PizzaResponseDto trouve = pizzaService.modifierPartiellement(id, pizzaRequestDto);
+        return ResponseEntity.ok(trouve);
+    }
+
 }
 
 
