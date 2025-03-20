@@ -23,6 +23,7 @@ import com.accenture.service.mapper.pizza.PizzaMapper;
 import com.accenture.service.pizza.PizzaService;
 import com.accenture.shared.Statut;
 import com.accenture.shared.Taille;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -81,6 +82,17 @@ public class CommandeServiceImplTest {
         when(commandeMapper.toCommandeResponseDTO(commandeRetourne)).thenReturn(commandeResponseDTO);
         assertEquals(commandeResponseDTO, commandeService.ajouter(commandeRequestDTO));
         verify(commandeDAO).save(any());
+    }
+
+    @Test
+    void testModifierFail() {
+        EntityNotFoundException entityNotFountException = assertThrows(EntityNotFoundException.class, () -> commandeService.modifier(44,null));
+        assertEquals("La commande n'existe pas.", entityNotFountException.getMessage());
+    }
+
+    @Test
+    void testModifierSuccess() {
+
     }
 
     /*
