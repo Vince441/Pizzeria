@@ -33,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -92,7 +93,24 @@ public class CommandeServiceImplTest {
 
     @Test
     void testModifierSuccess() {
+        int id = 1;
+        Statut statut = Statut.PRETE;
+        Statut statutRetourne = Statut.LIVREE;
+        Commande commande = creerCommande();
+        Commande commandeRetourne = creerCommande();
+        commande.setId(id);
+        commandeRetourne.setId(id);
+        commande.setStatut(statut);
+        commandeRetourne.setStatut(statutRetourne);
 
+        CommandeResponseDTO commandeResponseDTO = commandeMapper.toCommandeResponseDTO(commandeRetourne);
+
+        when(commandeDAO.existsById(id)).thenReturn(true);
+        when(commandeDAO.findById(id)).thenReturn(Optional.of(commande));
+        when(commandeDAO.save(commande)).thenReturn(commandeRetourne);
+        when(commandeMapper.toCommandeResponseDTO(commandeRetourne)).thenReturn(commandeResponseDTO);
+        assertEquals(commandeResponseDTO, commandeService.modifier(id, statut));
+        verify(commandeDAO).save(commande);
     }
 
     /*
